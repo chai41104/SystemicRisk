@@ -86,6 +86,41 @@ function failurePropagation(failedIndicator, exposures){
 	}
 }
 
+
+// total loss is used to calculate all money loss of the banks.
+function totalLoss(loss) {
+	var allLoss = 0.0;
+	// Sum all of banks' loss.
+	for(var i = 0; i < loss.length; ++i) {
+		allLoss += loss[i];
+	}
+	return allLoss;
+}
+
+// probScenario function is calculated probability of each scenario.
+function probScenario(failureProb, failed) {
+	if(failureProb.length != failed.length) {
+		throw('In failurePropagation, the length of both are not the same.');
+	}
+	else {
+		var prob = 1.0;
+		// Calculating in each bank.
+		for(var i = 0; i < failureProb.length; ++i) {
+			// if banks not failed.
+			if(failed[i] < 1.0) {
+				prob *= (1-failureProb[i]);
+			}
+			// if banks failed.
+			else {
+				prob *= (failureProb[i]);	
+			}
+		}
+		// How likely of this scenario.
+		return prob;
+	}
+}
+
+// This function is the main function of all calculation.
 function mainCalculation(failedNow) {
 	do {
 		// At the beginning, setting that failedIndicator is failedNow.
@@ -103,6 +138,32 @@ function mainCalculation(failedNow) {
 	} while(failedMore(failedIndicator, failedNow));
 
 	console.log(failedNow);
+}
+
+// This do permutation.
+function permutation(failed, index, workingFunction) {
+	// Need to be more than 0, index of array can't be negative.
+	if(index >= 0) {
+		failed[i] = 0.0;
+		permutation(failed, index - 1, workingFunction);
+		failed[i] = 1.0;
+		permutation(failed, index - 1, workingFunction);
+	}
+	else {
+		// call mainCalculation.
+		workingFunction(failed);
+	}
+}
+
+// This function will do all possible scenario in the given data.
+function generateAllPossible(bankCount) {
+	var failed = [];
+	//initiate that all banks is not failed.
+	for(var i = 0; i < bankCount; ++i) {
+		failed[i] = 0.0;
+	}
+	// Call permutation function.
+	permutation(failed, bankCount - 1, mainCalculation);
 }
 
 // A $( document ).ready() block.
