@@ -2,7 +2,7 @@
  * Grid-light theme for Highcharts JS
  * @author Torstein Honsi
  */
-function GridLight() {
+function GridLight(id) {
 	// Load the fonts
 	Highcharts.createElement('link', {
 		href: 'https://fonts.googleapis.com/css?family=Dosis:400,600',
@@ -71,5 +71,5 @@ function GridLight() {
 
 	// Apply the theme
 	Highcharts.setOptions(Highcharts.theme);
-	reset();
+	reset(id);
 }

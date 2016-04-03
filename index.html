@@ -85,23 +85,24 @@
                     <div class="navbar">
                       <div class="navbar-inner">
                         <div class="container">
-                    <ul>
-                      <li><a href="#tab1" data-toggle="tab">Result</a></li>
-                      <li><a href="#tab2" data-toggle="tab">Second</a></li>
-                      <li><a href="#tab3" data-toggle="tab">Third</a></li>
-                      <li><a href="#tab4" data-toggle="tab">Forth</a></li>
-                      <li><a href="#tab5" data-toggle="tab">Fifth</a></li>
-                      <li><a href="#tab6" data-toggle="tab">Sixth</a></li>
-                      <li><a href="#tab7" data-toggle="tab">Seventh</a></li>
-                    </ul>
-                     </div>
+                          <ul>
+                            <li><a href="#tabResult" data-toggle="tab">Result</a></li>
+                            <li><a href="#tab2" data-toggle="tab">Second</a></li>
+                            <li><a href="#tab3" data-toggle="tab">Third</a></li>
+                            <li><a href="#tab4" data-toggle="tab">Forth</a></li>
+                            <li><a href="#tab5" data-toggle="tab">Fifth</a></li>
+                            <li><a href="#tab6" data-toggle="tab">Sixth</a></li>
+                            <li><a href="#tab7" data-toggle="tab">Seventh</a></li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                     <div id="bar" class="progress progress-striped active">
                       <div class="bar progress-bar progress-bar-striped "></div>
                     </div>
                     <div class="tab-content">
-                        <div class="tab-pane" id="tab1">
+                        <div class="tab-pane" id="tabResult">
+                          <!--
                           <div class="box box-solid" id="this-graph-1">
                             <div class="box-header">
                                 <h3 class="box-title">Round One</h3>
@@ -122,11 +123,11 @@
                                     </a>
                                 </div>
                             </div>
-                            <!-- begining of poll body -->
                             <div class="box-body collapse in" id="this-graph-body-1">    
                               <div id="container"></div>
                             </div>
                           </div>
+                          -->
                         </div>
                         <div class="tab-pane" id="tab2">
                           2
@@ -181,13 +182,20 @@
     <script src="Script/jquery-ui.min.js"></script>
     <!-- step -->
     <script src="Script/step.js"></script>
-    <!-- step -->
+    <!-- prettify -->
     <script src="Script/prettify.js"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <!-- Bootstrap 3.3.5 -->
+    <script src="Script/bootstrap.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="Script/app.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="Script/demo.js"></script>
+    <!-- System Risk Calculation -->
+    <script src="Script/SystemRisk.js"></script>
     <script>
+      //<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
       $.widget.bridge('uibutton', $.ui.button);
 
-      
       $(document).ready(function() {
         $('#rootwizard').bootstrapWizard({
           onTabShow: function(tab, navigation, index) {
@@ -209,76 +217,171 @@
 
         }
       }
+      function addGraph(mainEle, id) {
+        var newEle = '<div class="box box-solid" id="this-graph-'+id+'"><div class="box-header">'
+                    +'<h3 class="box-title">Round '+id+'</h3><div class="btn-group pull-right">'
+                    +'<a href="#" class="btn btn-default btn-sm" data-toggle="dropdown" data-placement="left" title="Theme" aria-expanded="false"><i class="fa fa-wrench"></i></a>'
+                    +'<ul class="dropdown-menu"><li><a href="#" onclick="GridLight('+id+')" style="color:black;">Grid-Light</a></li>'
+                    +'<li><a href="#" onclick="SandSignika('+id+')" style="color:black;">Sand-Signika</a></li>'
+                    +'<li><a href="#" onclick="DarkTheme('+id+')" style="color:black;">Dark-Theme</a></li>'
+                    +'</ul><a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-graph-body-'+id+'">'
+                    +'<i class="fa fa-chevron-up"></i></a>'
+                    +'<a href="#" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="left" title="hide" data-target="#this-graph-'+id+'" data-dismiss="alert">'
+                    +'<i class="fa fa-times"></i></a></div></div>'
+                    +'<div class="box-body collapse in" id="this-graph-body-'+id+'"><div id="container'+id+'"></div></div></div>';
+        $('#' + mainEle).append(newEle);
+      }
+      var lossMoney;
+      var remainMoney;
+      var failedState;
+      var remainState;
+      function reset(id) {
+        $('#container' + id).highcharts({
+            chart: {
+                type: 'column',
+                options3d: {
+                    enabled: true,
+                    alpha: 15,
+                    beta: 15,
+                    viewDistance: 25,
+                    depth: 40
+                }
+            },
 
-      $(function () {
-        reset();
-      }); 
-    </script>
-
-<script type="text/javascript">
-  function reset() {
-    $('#container').highcharts({
-        chart: {
-            type: 'column',
-            options3d: {
-                enabled: true,
-                alpha: 15,
-                beta: 15,
-                viewDistance: 25,
-                depth: 40
-            }
-        },
-
-        title: {
-            text: 'Total loss in this scenario'
-        },
-
-        xAxis: {
-            categories: ['Bank1', 'Bank2', 'Bank3', 'Bank4']
-        },
-
-        yAxis: {
-            allowDecimals: false,
-            min: 0,
             title: {
-                text: 'Money (£ Million)'
+                text: 'Total loss in this scenario'
+            },
+
+            xAxis: {
+                categories: ['Bank1', 'Bank2', 'Bank3', 'Bank4', 'All Banks']
+            },
+
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'Money (£ Million)'
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<b>{point.key}</b><br>',
+                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y}'
+            },
+
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    depth: 40
+                }
+            },
+
+            series: [
+            {
+                name: 'Difference (Loss - Thresholds)',
+                data: remainMoney,
+                stack: 'Loss'
+            }, {
+                name: 'Loss',
+                data: lossMoney,
+                stack: 'Loss'
+            }, {
+                name: 'Remain',
+                data: remainState,
+                stack: 'Failed'
+            }, {
+                name: 'Failed',
+                data: failedState,
+                stack: 'Failed'
+            }]
+        });        
+      }
+      function generateChert(failedIndicator, thresholds, loss, id) {
+        lossMoney = [];
+        remainMoney = [];
+        failedState = [];
+        remainState = [];
+        var count = 0.0;
+        var countloss = 0.0;
+        var countremain = 0.0;
+        for(var i = 0; i < failedIndicator.length; ++i) {
+          // if bank doesn't failed.
+          if(failedIndicator[i] < 1.0) {
+            count += 1.0;
+            failedState.push(0.0);
+            remainState.push(1.0);
+
+            // Don't know yet. Assuming that the loss is 0.
+            if(loss == undefined) {
+              lossMoney.push(0.0);
+              remainMoney.push(thresholds[i]);
             }
-        },
-
-        tooltip: {
-            headerFormat: '<b>{point.key}</b><br>',
-            pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: £ {point.y} Million'
-        },
-
-        plotOptions: {
-            column: {
-                stacking: 'normal',
-                depth: 40
+            // knowing loss.
+            else {
+              lossMoney.push(loss[i]);
+              countloss += loss[i];
+              remainMoney.push(thresholds[i]-loss[i]);
             }
-        },
+          } 
+          // bank did failed.
+          else {
+            failedState.push(1.0);
+            remainState.push(0.0);
 
-        series: [{
-            name: 'Loss',
-            data: [5, 3, 4, 7],
-            stack: 'Loss'
-        }, {
-            name: 'Thresholds (Limited Loss)',
-            data: [2, 5, 6, 2],
-            stack: 'female'
-        }]
-    });        
-  }
-
+            // Don't know yet. Assuming that the loss is the threshold.
+            if(loss == undefined) {
+              lossMoney.push(thresholds[i]);
+              countloss += thresholds[i];
+              remainMoney.push(0.0);
+            }
+            // knowing loss. then, adding the highest one.
+            else {
+              var lost = (loss[i] >= thresholds[i]? loss[i]: thresholds[i]);
+              countloss += lost;
+              lossMoney.push(lost);
+              remainMoney.push(thresholds[i]-lost);
+            }
+          }
+        }
+        // adding how many banks are servired.
+        remainState.push(count);
+        // adding how many banks are failed.
+        failedState.push(failedIndicator.length - count);
+        // adding all loss.
+        lossMoney.push(countloss);
+        // adding all loss.
+        remainMoney.push(countremain);
+        // adding a chert to html tag.
+        addGraph("tabResult", id);
+        // adding data to the cherts
+        reset(id);
+      }
+      $(function () {
+        // This function is the main function of all calculation.
+        function mainCalculation1(failedNow) {
+          var failedIndicator;
+          var loss;
+          var failed;
+          for(var round = 1; round == 1 || failedMore(failedIndicator, failedNow); round ++) {
+            // At the beginning, setting that failedIndicator is failedNow.
+            failedIndicator = failedNow;
+            // Using Jquery to generate cherts in each round.
+            generateChert(failedIndicator, thresholds, loss, round);
+            // Calculates what banks will fail.
+            loss = failurePropagation(failedIndicator, exposures);
+            // Calculates what companies will fail.
+            failed = PWComparison(thresholds, loss);
+            // merging the new result and old result together.
+            failedNow = PWOr(failed, failedIndicator);
+          }
+        }
+        // Predicting calculations.
+        mainCalculation1([0.0, 1.0, 0.0, 1.0]);
+        // Updating Color of each box.
+        updateBox();
+      });
 </script>
 
-    <!-- Bootstrap 3.3.5 -->
-    <script src="Script/bootstrap.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="Script/app.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="Script/demo.js"></script>
-    <!-- System Risk Calculation -->
-    <script src="Script/SystemRisk.js"></script>
     <!-- Highcharts -->
     <script src="Script/highcharts.js"></script>
     <script src="Script/highcharts-3d.js"></script>
@@ -287,5 +390,51 @@
     <script src="Script/grid-light.js"></script>
     <script src="Script/sand-signika.js"></script>
     <script src="Script/dark-unica.js"></script>
+    
+    <script type="text/javascript">
+      function updateBox() {
+        var cls = get('skin');
+        $(".box-solid").each(function() {
+          var obj = $(this);
+          obj.removeClass('box-default');
+          obj.removeClass('box-purple');
+          obj.removeClass('box-primary');
+          obj.removeClass('box-success');
+          obj.removeClass('box-warning');
+          obj.removeClass('box-danger');
+          if(cls == 'skin-black-light' || cls == 'skin-black') {
+            obj.addClass('box-default');
+          }
+          else if(cls == 'skin-purple-light' || cls == 'skin-purple') {
+            obj.addClass('box-purple');
+          }
+          else if(cls == 'skin-blue-light' || cls == 'skin-blue') {
+            obj.addClass('box-primary');
+          }
+          else if(cls == 'skin-green-light' || cls == 'skin-green') {
+            obj.addClass('box-success');
+          }
+          else if(cls == 'skin-yellow-light' || cls == 'skin-yellow') {
+            obj.addClass('box-warning');
+          }
+          else if(cls == 'skin-red-light' || cls == 'skin-red') {
+            obj.addClass('box-danger');
+          }
+        });
+      }
+      /**
+       * Get a prestored setting
+       *
+       * @param String name Name of of the setting
+       * @returns String The value of the setting | null
+       */
+      function get(name) {
+        if (typeof (Storage) !== "undefined") {
+          return localStorage.getItem(name);
+        } else {
+          window.alert('Please use a modern browser to properly view this template!');
+        }
+      }
+    </script>
   </body>
 </html>

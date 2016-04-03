@@ -2,7 +2,7 @@
  * Sand-Signika theme for Highcharts JS
  * @author Torstein Honsi
  */
-function SandSignika(){
+function SandSignika(id){
 	// Load the fonts
 	Highcharts.createElement('link', {
 		href: 'https://fonts.googleapis.com/css?family=Signika:400,700',
@@ -102,5 +102,5 @@ function SandSignika(){
 
 	// Apply the theme
 	Highcharts.setOptions(Highcharts.theme);
-	reset();
+	reset(id);
 }

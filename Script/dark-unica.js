@@ -3,7 +3,7 @@
  * @author Torstein Honsi
  */
 
-function DarkTheme() {
+function DarkTheme(id) {
 	// Load the fonts
 	Highcharts.createElement('link', {
 		href: 'https://fonts.googleapis.com/css?family=Unica+One',
@@ -212,5 +212,5 @@ function DarkTheme() {
 
 	// Apply the theme
 	Highcharts.setOptions(Highcharts.theme);
-	reset();
+	reset(id);
 }
