@@ -6,6 +6,7 @@
  */
 (function ($, AdminLTE) {
 
+
   "use strict";
 
   /**
@@ -231,6 +232,42 @@
     AdminLTE.controlSidebar._fix($(".control-sidebar-bg"));
     AdminLTE.controlSidebar._fix($(".control-sidebar"));
   }
+  
+  /**
+   * Replaces the old skin with the new skin
+   * @param String cls the new skin class
+   * @returns Boolean false to prevent link's default action
+   */
+  function updateBox(cls) {
+
+    $(".box-solid").each(function() {
+      var obj = $(this);
+      obj.removeClass('box-default');
+      obj.removeClass('box-purple');
+      obj.removeClass('box-primary');
+      obj.removeClass('box-success');
+      obj.removeClass('box-warning');
+      obj.removeClass('box-danger');
+      if(cls == 'skin-black-light' || cls == 'skin-black') {
+        obj.addClass('box-default');
+      }
+      else if(cls == 'skin-purple-light' || cls == 'skin-purple') {
+        obj.addClass('box-purple');
+      }
+      else if(cls == 'skin-blue-light' || cls == 'skin-blue') {
+        obj.addClass('box-primary');
+      }
+      else if(cls == 'skin-green-light' || cls == 'skin-green') {
+        obj.addClass('box-success');
+      }
+      else if(cls == 'skin-yellow-light' || cls == 'skin-yellow') {
+        obj.addClass('box-warning');
+      }
+      else if(cls == 'skin-red-light' || cls == 'skin-red') {
+        obj.addClass('box-danger');
+      }
+    });
+  }
 
   /**
    * Replaces the old skin with the new skin
@@ -244,6 +281,7 @@
 
     $("body").addClass(cls);
     store('skin', cls);
+    updateBox(cls);
     return false;
   }
 
@@ -333,6 +371,7 @@
     if ($('body').hasClass('sidebar-collapse')) {
       $("[data-layout='sidebar-collapse']").attr('checked', 'checked');
     }
-
+    updateBox(tmp);
   }
+  
 })(jQuery, $.AdminLTE);

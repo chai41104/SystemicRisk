@@ -34,7 +34,7 @@
 
       <header class="main-header">
         <!-- Logo -->
-        <a href="index2.html" class="logo">
+        <a href="index.html" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini"><b>S</b>R</span>
           <!-- logo for regular state and mobile devices -->
@@ -46,6 +46,14 @@
           <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
           </a>
+          <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                <!-- Control Sidebar Toggle Button -->
+                <li>
+                    <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                </li>
+            </ul>
+          </div>
         </nav>
       </header>
       <!-- Left side column. contains the logo and sidebar -->
@@ -73,43 +81,78 @@
             <div class="col-lg-12">
               <div class="box box-solid">
                 <div class="box-body">
-                  <!-- multistep form -->
-                  <form id="msform">
-                    <!-- progressbar -->
-                    <ul id="progressbar">
-                      <li class="active">Input Data</li>
-                      <li>Input more data</li>
-                      <li>Getting results</li>
+                  <div id="rootwizard">
+                    <div class="navbar">
+                      <div class="navbar-inner">
+                        <div class="container">
+                    <ul>
+                      <li><a href="#tab1" data-toggle="tab">Result</a></li>
+                      <li><a href="#tab2" data-toggle="tab">Second</a></li>
+                      <li><a href="#tab3" data-toggle="tab">Third</a></li>
+                      <li><a href="#tab4" data-toggle="tab">Forth</a></li>
+                      <li><a href="#tab5" data-toggle="tab">Fifth</a></li>
+                      <li><a href="#tab6" data-toggle="tab">Sixth</a></li>
+                      <li><a href="#tab7" data-toggle="tab">Seventh</a></li>
                     </ul>
-                    <!-- fieldsets -->
-                    <fieldset>
-                      <h2 class="fs-title">Create your account</h2>
-                      <h3 class="fs-subtitle">This is step 1</h3>
-                      <input type="text" name="email" placeholder="Email" />
-                      <input type="password" name="pass" placeholder="Password" />
-                      <input type="password" name="cpass" placeholder="Confirm Password" />
-                      <input type="button" name="next" class="next action-button" value="Next" />
-                    </fieldset>
-                    <fieldset>
-                      <h2 class="fs-title">Social Profiles</h2>
-                      <h3 class="fs-subtitle">Your presence on the social network</h3>
-                      <input type="text" name="twitter" placeholder="Twitter" />
-                      <input type="text" name="facebook" placeholder="Facebook" />
-                      <input type="text" name="gplus" placeholder="Google Plus" />
-                      <input type="button" name="previous" class="previous action-button" value="Previous" />
-                      <input type="button" name="next" class="next action-button" value="Next" />
-                    </fieldset>
-                    <fieldset>
-                      <h2 class="fs-title">Personal Details</h2>
-                      <h3 class="fs-subtitle">We will never sell it</h3>
-                      <input type="text" name="fname" placeholder="First Name" />
-                      <input type="text" name="lname" placeholder="Last Name" />
-                      <input type="text" name="phone" placeholder="Phone" />
-                      <textarea name="address" placeholder="Address"></textarea>
-                      <input type="button" name="previous" class="previous action-button" value="Previous" />
-                      <input type="submit" name="submit" class="submit action-button" value="Submit" />
-                    </fieldset>
-                  </form>
+                     </div>
+                      </div>
+                    </div>
+                    <div id="bar" class="progress progress-striped active">
+                      <div class="bar progress-bar progress-bar-striped "></div>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane" id="tab1">
+                          <div class="box box-solid" id="this-graph-1">
+                            <div class="box-header">
+                                <h3 class="box-title">Round One</h3>
+                                <div class="btn-group pull-right">
+                                    <a href="#" class="btn btn-default btn-sm" data-toggle="dropdown" data-placement="left" title="Theme" aria-expanded="false">
+                                        <i class="fa fa-wrench"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" onclick="GridLight()" style="color:black;">Grid-Light</a></li>
+                                        <li><a href="#" onclick="SandSignika()" style="color:black;">Sand-Signika</a></li>
+                                        <li><a href="#" onclick="DarkTheme()" style="color:black;">Dark-Theme</a></li>
+                                    </ul>
+                                    <a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-graph-body-1">
+                                      <i class="fa fa-chevron-up"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="left" title="hide" data-target="#this-graph-1" data-dismiss="alert">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- begining of poll body -->
+                            <div class="box-body collapse in" id="this-graph-body-1">    
+                              <div id="container"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="tab-pane" id="tab2">
+                          2
+                        </div>
+                      <div class="tab-pane" id="tab3">
+                        3
+                        </div>
+                      <div class="tab-pane" id="tab4">
+                        4
+                        </div>
+                      <div class="tab-pane" id="tab5">
+                        5
+                        </div>
+                      <div class="tab-pane" id="tab6">
+                        6
+                        </div>
+                      <div class="tab-pane" id="tab7">
+                        7
+                        </div>
+                      <ul class="pager wizard">
+                        <li class="previous first"><a href="#">First</a></li>
+                        <li class="previous"><a href="#">Previous</a></li>
+                        <li class="next"><a href="#">Next</a></li>
+                      </ul>
+                    </div>  
+                  </div>
                 </div>
               </div>
             </div>
@@ -117,6 +160,19 @@
         </section><!-- /.content -->
       
       </div><!-- /.content-wrapper -->
+
+      <!-- Control Sidebar -->
+      <aside class="control-sidebar control-sidebar-dark">
+          <!-- Create the tabs -->
+          <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+              <!-- Home tab content -->
+              <div class="tab-pane" id="control-sidebar-home-tab">
+              </div><!-- /.tab-pane -->
+          </div>
+      </aside><!-- /.control-sidebar -->
     </div><!-- ./wrapper -->
 
     <!-- jQuery 2.1.4 -->
@@ -125,10 +181,96 @@
     <script src="Script/jquery-ui.min.js"></script>
     <!-- step -->
     <script src="Script/step.js"></script>
+    <!-- step -->
+    <script src="Script/prettify.js"></script>
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
       $.widget.bridge('uibutton', $.ui.button);
+
+      
+      $(document).ready(function() {
+        $('#rootwizard').bootstrapWizard({
+          onTabShow: function(tab, navigation, index) {
+            var $total = navigation.find('li').length;
+            var $current = index+1;
+            var $percent = ($current/$total) * 100;
+            $('#rootwizard').find('.bar').css({width:$percent+'%'});
+        }});
+      });
+
+      function change(el){
+        var elc = el.children;
+        if(elc[0].className == "fa fa-chevron-down") {
+            elc[0].className = "fa fa-chevron-up";
+
+        }
+        else {
+            elc[0].className = "fa fa-chevron-down";
+
+        }
+      }
+
+      $(function () {
+        reset();
+      }); 
     </script>
+
+<script type="text/javascript">
+  function reset() {
+    $('#container').highcharts({
+        chart: {
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 15,
+                beta: 15,
+                viewDistance: 25,
+                depth: 40
+            }
+        },
+
+        title: {
+            text: 'Total loss in this scenario'
+        },
+
+        xAxis: {
+            categories: ['Bank1', 'Bank2', 'Bank3', 'Bank4']
+        },
+
+        yAxis: {
+            allowDecimals: false,
+            min: 0,
+            title: {
+                text: 'Money (£ Million)'
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<b>{point.key}</b><br>',
+            pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: £ {point.y} Million'
+        },
+
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                depth: 40
+            }
+        },
+
+        series: [{
+            name: 'Loss',
+            data: [5, 3, 4, 7],
+            stack: 'Loss'
+        }, {
+            name: 'Thresholds (Limited Loss)',
+            data: [2, 5, 6, 2],
+            stack: 'female'
+        }]
+    });        
+  }
+
+</script>
+
     <!-- Bootstrap 3.3.5 -->
     <script src="Script/bootstrap.min.js"></script>
     <!-- AdminLTE App -->
@@ -137,5 +279,13 @@
     <script src="Script/demo.js"></script>
     <!-- System Risk Calculation -->
     <script src="Script/SystemRisk.js"></script>
+    <!-- Highcharts -->
+    <script src="Script/highcharts.js"></script>
+    <script src="Script/highcharts-3d.js"></script>
+    <script src="Script/exporting.js"></script>
+    <!-- Highcharts theme -->
+    <script src="Script/grid-light.js"></script>
+    <script src="Script/sand-signika.js"></script>
+    <script src="Script/dark-unica.js"></script>
   </body>
 </html>

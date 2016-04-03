@@ -1,81 +1,265 @@
-//jQuery time
-var current_fs, next_fs, previous_fs; //fieldsets
-var left, opacity, scale; //fieldset properties which we will animate
-var animating; //flag to prevent quick multi-click glitches
+/*!
+ * jQuery twitter bootstrap wizard plugin
+ * Examples and documentation at: http://github.com/VinceG/twitter-bootstrap-wizard
+ * version 1.0
+ * Requires jQuery v1.3.2 or later
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ * Authors: Vadim Vincent Gabriel (http://vadimg.com), Jason Gill (www.gilluminate.com)
+ */
+;(function($) {
+var bootstrapWizardCreate = function(element, options) {
+	var element = $(element);
+	var obj = this;
 
-$(".next").click(function(){
-	if(animating) return false;
-	animating = true;
+	// Merge options with defaults
+	var $settings = $.extend({}, $.fn.bootstrapWizard.defaults, options);
+	var $activeTab = null;
+	var $navigation = null;
 	
-	current_fs = $(this).parent();
-	next_fs = $(this).parent().next();
-	
-	//activate next step on progressbar using the index of next_fs
-	$("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
-	
-	//show the next fieldset
-	next_fs.show(); 
-	//hide the current fieldset with style
-	current_fs.animate({opacity: 0}, {
-		step: function(now, mx) {
-			//as the opacity of current_fs reduces to 0 - stored in "now"
-			//1. scale current_fs down to 80%
-			scale = 1 - (1 - now) * 0.2;
-			//2. bring next_fs from the right(50%)
-			left = (now * 50)+"%";
-			//3. increase opacity of next_fs to 1 as it moves in
-			opacity = 1 - now;
-			current_fs.css({
-        'transform': 'scale('+scale+')',
-        'position': 'absolute'
-      });
-			next_fs.css({'left': left, 'opacity': opacity});
-		}, 
-		duration: 800, 
-		complete: function(){
-			current_fs.hide();
-			animating = false;
-		}, 
-		//this comes from the custom easing plugin
-		easing: 'easeInOutBack'
+	this.rebindClick = function(selector, fn)
+	{
+		selector.unbind('click', fn).bind('click', fn);
+	}
+
+	this.fixNavigationButtons = function() {
+
+		// Get the current active tab
+		if(!$activeTab.length) {
+			// Select first one
+			$navigation.find('a:first').tab('show');
+			$activeTab = $navigation.find('li:first');
+		}
+
+		// We are unbinding and rebinding to ensure single firing and no double-click errors
+		obj.rebindClick($($settings.nextSelector, element), obj.next);
+		obj.rebindClick($($settings.previousSelector, element), obj.previous);
+		obj.rebindClick($($settings.lastSelector, element), obj.last);
+		obj.rebindClick($($settings.firstSelector, element), obj.first);
+
+		if($settings.onTabShow && typeof $settings.onTabShow === 'function' && $settings.onTabShow($activeTab, $navigation, obj.currentIndex())===false){
+			return false;
+		}
+	};
+
+	this.next = function(e) {
+
+		// If we clicked the last then dont activate this
+		if(element.hasClass('last')) {
+			return false;
+		}
+
+		if($settings.onNext && typeof $settings.onNext === 'function' && $settings.onNext($activeTab, $navigation, obj.nextIndex())===false){
+			return false;
+		}
+
+		// Did we click the last button
+		$index = obj.nextIndex();
+		if($index > obj.navigationLength()) {
+		} else {
+			$navigation.find('li:eq('+$index+') a').tab('show');
+			var $total = $navigation.find('li').length;
+            var $current = $index+1;
+            var $percent = ($current/$total) * 100;
+            $('#rootwizard').find('.bar').css({width:$percent+'%'});
+		}
+	};
+
+	this.previous = function(e) {
+
+		// If we clicked the first then dont activate this
+		if(element.hasClass('first')) {
+			return false;
+		}
+
+		if($settings.onPrevious && typeof $settings.onPrevious === 'function' && $settings.onPrevious($activeTab, $navigation, obj.previousIndex())===false){
+			return false;
+		}
+
+		$index = obj.previousIndex();
+		if($index < 0) {
+		} else {
+			$navigation.find('li:eq('+$index+') a').tab('show');
+			var $total = $navigation.find('li').length;
+            var $current = $index+1;
+            var $percent = ($current/$total) * 100;
+            $('#rootwizard').find('.bar').css({width:$percent+'%'});
+		}
+	};
+
+	this.first = function(e) {
+		if($settings.onFirst && typeof $settings.onFirst === 'function' && $settings.onFirst($activeTab, $navigation, obj.firstIndex())===false){
+			return false;
+		}
+
+		// If the element is disabled then we won't do anything
+		if(element.hasClass('disabled')) {
+			return false;
+		}
+		$navigation.find('li:eq(0) a').tab('show');
+		var $total = $navigation.find('li').length;
+        var $current = 1;
+        var $percent = ($current/$total) * 100;
+        $('#rootwizard').find('.bar').css({width:$percent+'%'});
+	};
+	this.last = function(e) {
+		if($settings.onLast && typeof $settings.onLast === 'function' && $settings.onLast($activeTab, $navigation, obj.lastIndex())===false){
+			return false;
+		}
+
+		// If the element is disabled then we won't do anything
+		if(element.hasClass('disabled')) {
+			return false;
+		}
+		$navigation.find('li:eq('+obj.navigationLength()+') a').tab('show');
+	};
+	this.currentIndex = function() {
+		return $navigation.find('li').index($activeTab);
+	};
+	this.firstIndex = function() {
+		return 0;
+	};
+	this.lastIndex = function() {
+		return obj.navigationLength();
+	};
+	this.getIndex = function(e) {
+		return $navigation.find('li').index(e);
+	};
+	this.nextIndex = function() {
+		$activeTab = $navigation.find('li.active', element);
+		return $navigation.find('li').index($activeTab) + 1;
+	};
+	this.previousIndex = function() {
+		$activeTab = $navigation.find('li.active', element);
+		return $navigation.find('li').index($activeTab) - 1;
+	};
+	this.navigationLength = function() {
+		return $navigation.find('li').length - 1;
+	};
+	this.activeTab = function() {
+		return $activeTab;
+	};
+	this.nextTab = function() {
+		return $navigation.find('li:eq('+(obj.currentIndex()+1)+')').length ? $navigation.find('li:eq('+(obj.currentIndex()+1)+')') : null;
+	};
+	this.previousTab = function() {
+		if(obj.currentIndex() <= 0) {
+			return null;
+		}
+		return $navigation.find('li:eq('+parseInt(obj.currentIndex()-1)+')');
+	};
+	this.show = function(index) {
+		return element.find('li:eq(' + index + ') a').tab('show');
+	};
+	this.disable = function(index) {
+		$navigation.find('li:eq('+index+')').addClass('disabled');
+	};
+	this.enable = function(index) {
+		$navigation.find('li:eq('+index+')').removeClass('disabled');
+	};
+	this.hide = function(index) {
+		$navigation.find('li:eq('+index+')').hide();
+	};
+	this.display = function(index) {
+		$navigation.find('li:eq('+index+')').show();
+	};
+	this.remove = function(args) {
+		var $index = args[0];
+		var $removeTabPane = typeof args[1] != 'undefined' ? args[1] : false;
+		var $item = $navigation.find('li:eq('+$index+')');
+
+		// Remove the tab pane first if needed
+		if($removeTabPane) {
+			var $href = $item.find('a').attr('href');
+			$($href).remove();
+		}
+
+		// Remove menu item
+		$item.remove();
+	};
+
+	$navigation = element.find('ul:first', element);
+	$activeTab = $navigation.find('li.active', element);
+
+	if(!$navigation.hasClass($settings.tabClass)) {
+		$navigation.addClass($settings.tabClass);
+	}
+
+	// Load onInit
+	if($settings.onInit && typeof $settings.onInit === 'function'){
+		$settings.onInit($activeTab, $navigation, 0);
+	}
+
+	// Load onShow
+	if($settings.onShow && typeof $settings.onShow === 'function'){
+		$settings.onShow($activeTab, $navigation, obj.nextIndex());
+	}
+
+	// Work the next/previous buttons
+	obj.fixNavigationButtons();
+
+	$('a[data-toggle="tab"]', $navigation).on('click', function (e) {
+		// Get the index of the clicked tab
+		var clickedIndex = $navigation.find('li').index($(e.currentTarget).parent('li'));
+		if($settings.onTabClick && typeof $settings.onTabClick === 'function' && $settings.onTabClick($activeTab, $navigation, obj.currentIndex(), clickedIndex)===false){
+			return false;
+		}
 	});
-});
 
-$(".previous").click(function(){
-	if(animating) return false;
-	animating = true;
-	
-	current_fs = $(this).parent();
-	previous_fs = $(this).parent().prev();
-	
-	//de-activate current step on progressbar
-	$("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
-	
-	//show the previous fieldset
-	previous_fs.show(); 
-	//hide the current fieldset with style
-	current_fs.animate({opacity: 0}, {
-		step: function(now, mx) {
-			//as the opacity of current_fs reduces to 0 - stored in "now"
-			//1. scale previous_fs from 80% to 100%
-			scale = 0.8 + (1 - now) * 0.2;
-			//2. take current_fs to the right(50%) - from 0%
-			left = ((1-now) * 50)+"%";
-			//3. increase opacity of previous_fs to 1 as it moves in
-			opacity = 1 - now;
-			current_fs.css({'left': left});
-			previous_fs.css({'transform': 'scale('+scale+')', 'opacity': opacity});
-		}, 
-		duration: 800, 
-		complete: function(){
-			current_fs.hide();
-			animating = false;
-		}, 
-		//this comes from the custom easing plugin
-		easing: 'easeInOutBack'
+	$('a[data-toggle="tab"]', $navigation).on('shown', function (e) {  // use shown instead of show to help prevent double firing
+		$element = $(e.target).parent();
+		var nextTab = $navigation.find('li').index($element);
+
+		// If it's disabled then do not change
+		if($element.hasClass('disabled')) {
+			return false;
+		}
+
+		if($settings.onTabChange && typeof $settings.onTabChange === 'function' && $settings.onTabChange($activeTab, $navigation, obj.currentIndex(), nextTab)===false){
+				return false;
+		}
+
+		$activeTab = $element; // activated tab
+		obj.fixNavigationButtons();
 	});
-});
+};
+$.fn.bootstrapWizard = function(options) {
+	//expose methods
+	if (typeof options == 'string') {
+		var args = Array.prototype.slice.call(arguments, 1)
+		if(args.length === 1) {
+			args.toString();
+		}
+		return this.data('bootstrapWizard')[options](args);
+	}
+	return this.each(function(index){
+		var element = $(this);
+		// Return early if this element already has a plugin instance
+		if (element.data('bootstrapWizard')) return;
+		// pass options to plugin constructor
+		var wizard = new bootstrapWizardCreate(element, options);
+		// Store plugin object in this element's data
+		element.data('bootstrapWizard', wizard);
+	});
+};
 
-$(".submit").click(function(){
-	return false;
-});
+// expose options
+$.fn.bootstrapWizard.defaults = {
+	tabClass:         'nav nav-pills',
+	nextSelector:     '.wizard li.next',
+	previousSelector: '.wizard li.previous',
+	firstSelector:    '.wizard li.first',
+	lastSelector:     '.wizard li.last',
+	onShow:           null,
+	onInit:           null,
+	onNext:           null,
+	onPrevious:       null,
+	onLast:           null,
+	onFirst:          null,
+	onTabChange:      null, 
+	onTabClick:       null,
+	onTabShow:        null
+};
+
+})(jQuery);

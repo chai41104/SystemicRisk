@@ -125,19 +125,19 @@ function mainCalculation(failedNow) {
 	do {
 		// At the beginning, setting that failedIndicator is failedNow.
 		var failedIndicator = failedNow;
-		console.log(failedIndicator);
+		//console.log(failedIndicator);
 		// Calculates what banks will fail.
 		var loss = failurePropagation(failedIndicator, exposures);
-		console.log(loss);
+		//console.log(loss);
 		// Calculattes what companies will fail.
 		var failed = PWComparison(thresholds, loss);
-		console.log(failed);
+		//console.log(failed);
 		// merging the new result and old result together.
 		failedNow = PWOr(failed, failedIndicator);
-		console.log(failedNow);
+		//console.log(failedNow);
 	} while(failedMore(failedIndicator, failedNow));
 
-	console.log(failedNow);
+	//console.log(failedNow);
 }
 
 // This do permutation.
