@@ -212,5 +212,6 @@ function DarkTheme(id) {
 
 	// Apply the theme
 	Highcharts.setOptions(Highcharts.theme);
+	// Updating graph.
 	reset(id);
 }

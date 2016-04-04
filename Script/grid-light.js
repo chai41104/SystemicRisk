@@ -71,5 +71,5 @@ function GridLight(id) {
 
 	// Apply the theme
 	Highcharts.setOptions(Highcharts.theme);
-	reset(id);
+	reset(id+"");
 }

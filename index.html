@@ -86,10 +86,10 @@
                       <div class="navbar-inner">
                         <div class="container">
                           <ul>
+                            <li><a href="#tabInsertBanks" data-toggle="tab">Insert Banks</a></li>
+                            <li><a href="#tabProcessing" data-toggle="tab">Processing</a></li>
                             <li><a href="#tabResult" data-toggle="tab">Result</a></li>
-                            <li><a href="#tab2" data-toggle="tab">Second</a></li>
-                            <li><a href="#tab3" data-toggle="tab">Third</a></li>
-                            <li><a href="#tab4" data-toggle="tab">Forth</a></li>
+                            <li><a href="#tabSummarize" data-toggle="tab">Summarize</a></li>
                             <li><a href="#tab5" data-toggle="tab">Fifth</a></li>
                             <li><a href="#tab6" data-toggle="tab">Sixth</a></li>
                             <li><a href="#tab7" data-toggle="tab">Seventh</a></li>
@@ -98,9 +98,37 @@
                       </div>
                     </div>
                     <div id="bar" class="progress progress-striped active">
-                      <div class="bar progress-bar progress-bar-striped "></div>
+                      <div class="bar progress-bar progress-bar-striped ">Your progress</div>
                     </div>
                     <div class="tab-content">
+                        <div class="tab-pane" id="tabSummarize">
+                          <!--
+                          <div class="box box-solid" id="this-graph-1">
+                            <div class="box-header">
+                                <h3 class="box-title">Round One</h3>
+                                <div class="btn-group pull-right">
+                                    <a href="#" class="btn btn-default btn-sm" data-toggle="dropdown" data-placement="left" title="Theme" aria-expanded="false">
+                                        <i class="fa fa-wrench"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" onclick="GridLight()" style="color:black;">Grid-Light</a></li>
+                                        <li><a href="#" onclick="SandSignika()" style="color:black;">Sand-Signika</a></li>
+                                        <li><a href="#" onclick="DarkTheme()" style="color:black;">Dark-Theme</a></li>
+                                    </ul>
+                                    <a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-graph-body-1">
+                                      <i class="fa fa-chevron-up"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="left" title="hide" data-target="#this-graph-1" data-dismiss="alert">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="box-body collapse in" id="this-graph-body-1">    
+                              <div id="container"></div>
+                            </div>
+                          </div>
+                          -->
+                        </div>
                         <div class="tab-pane" id="tabResult">
                           <!--
                           <div class="box box-solid" id="this-graph-1">
@@ -129,15 +157,43 @@
                           </div>
                           -->
                         </div>
-                        <div class="tab-pane" id="tab2">
-                          2
+                        
+                      <div class="tab-pane" id="tabProcessing">
+                        <div class="callout callout-info">
+                          <h4><i align="center" class="fa fa-spinner fa-pulse"></i> All Cherts are processing</h4>
+                          <p>Please wait our system to processing cherts before continues.</p>
                         </div>
-                      <div class="tab-pane" id="tab3">
-                        3
+                        <div class="callout callout-success">
+                          <h4> Pleseclick continues to see your results</h4>
+                          <p>We have done processing. Please click next to get your results.</p>
                         </div>
-                      <div class="tab-pane" id="tab4">
-                        4
+                      </div>
+                      <div class="tab-pane" id="tabInsertBanks">
+                        <div class="box box-solid">
+                          <div class="box-header">
+                            <h3 class="box-title">Please Answer All Questions</h3>
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-insert-body-1">
+                                  <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                          </div>
+                          <div class="box-body collapse in" id="this-insert-body-1">    
+                            <div class="form-group">
+                              <label for="sel1">How many companies do you like to calculate (maximum : 8 for this beta version)?</label>
+                              <select class="form-control" id="numsel">
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                              </select>
+                            </div>
+                            <div id="nameBanks">
+                            </div>
+                          </div>
                         </div>
+                      </div>
                       <div class="tab-pane" id="tab5">
                         5
                         </div>
@@ -214,7 +270,6 @@
         }
         else {
             elc[0].className = "fa fa-chevron-down";
-
         }
       }
       function addGraph(mainEle, id) {
@@ -235,66 +290,107 @@
       var remainMoney;
       var failedState;
       var remainState;
+      var recordTotalLoss = [];
+      var recordRemains = [];
+      var labelOverview = [];
+      // defining the word.
+      var Summarize = "Summarize";
+      var Overview = "Overview";
       function reset(id) {
-        $('#container' + id).highcharts({
+        if(id == "Overview") {
+          $('#container' + id).highcharts({
             chart: {
-                type: 'column',
-                options3d: {
-                    enabled: true,
-                    alpha: 15,
-                    beta: 15,
-                    viewDistance: 25,
-                    depth: 40
-                }
+                type: 'line'
             },
-
             title: {
-                text: 'Total loss in this scenario'
+                text: 'Total Loss and Remaining fund in all banks'
             },
-
             xAxis: {
-                categories: ['Bank1', 'Bank2', 'Bank3', 'Bank4', 'All Banks']
+                categories: labelOverview
             },
-
             yAxis: {
-                allowDecimals: false,
-                min: 0,
-                title: {
-                    text: 'Money (£ Million)'
-                }
+                  allowDecimals: true,
+                  title: {
+                      text: 'Money (£ Million)'
+                  }
             },
-
-            tooltip: {
-                headerFormat: '<b>{point.key}</b><br>',
-                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y}'
-            },
-
             plotOptions: {
-                column: {
-                    stacking: 'normal',
-                    depth: 40
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: false
                 }
             },
-
-            series: [
-            {
-                name: 'Difference (Loss - Thresholds)',
-                data: remainMoney,
-                stack: 'Loss'
+            series: [{
+                name: 'Total Loss',
+                data: recordTotalLoss
             }, {
-                name: 'Loss',
-                data: lossMoney,
-                stack: 'Loss'
-            }, {
-                name: 'Remain',
-                data: remainState,
-                stack: 'Failed'
-            }, {
-                name: 'Failed',
-                data: failedState,
-                stack: 'Failed'
+                name: 'Total Remain',
+                data: recordRemains
             }]
-        });        
+          });
+        }
+        else {
+          $('#container' + id).highcharts({
+              chart: {
+                  type: 'column',
+                  options3d: {
+                      enabled: true,
+                      alpha: 15,
+                      beta: 15,
+                      viewDistance: 25,
+                      depth: 40
+                  }
+              },
+
+              title: {
+                  text: 'Total loss in this scenario'
+              },
+
+              xAxis: {
+                  categories: ['Bank1', 'Bank2', 'Bank3', 'Bank4', 'All Banks']
+              },
+
+              yAxis: {
+                  allowDecimals: true,
+                  title: {
+                      text: 'Money (£ Million)'
+                  }
+              },
+
+              tooltip: {
+                  headerFormat: '<b>{point.key}</b><br>',
+                  pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y}'
+              },
+
+              plotOptions: {
+                  column: {
+                      stacking: 'normal',
+                      depth: 40
+                  }
+              },
+
+              series: [
+              {
+                  name: 'Difference (Loss - Thresholds)',
+                  data: remainMoney,
+                  stack: 'Loss'
+              }, {
+                  name: 'Loss',
+                  data: lossMoney,
+                  stack: 'Loss'
+              }, {
+                  name: 'Remain',
+                  data: remainState,
+                  stack: 'Failed'
+              }, {
+                  name: 'Failed',
+                  data: failedState,
+                  stack: 'Failed'
+              }]
+          });
+        }        
       }
       function generateChert(failedIndicator, thresholds, loss, id) {
         lossMoney = [];
@@ -321,6 +417,7 @@
               lossMoney.push(loss[i]);
               countloss += loss[i];
               remainMoney.push(thresholds[i]-loss[i]);
+              countremain += thresholds[i]-loss[i];
             }
           } 
           // bank did failed.
@@ -340,6 +437,7 @@
               countloss += lost;
               lossMoney.push(lost);
               remainMoney.push(thresholds[i]-lost);
+              countremain += thresholds[i]-lost;
             }
           }
         }
@@ -349,6 +447,12 @@
         failedState.push(failedIndicator.length - count);
         // adding all loss.
         lossMoney.push(countloss);
+        // record total loss in each round.
+        recordTotalLoss.push(countloss);
+        // record total thresholds in each round.
+        recordRemains.push(countremain);
+        // record label in each round.
+        labelOverview.push("Round " + id);
         // adding all loss.
         remainMoney.push(countremain);
         // adding a chert to html tag.
@@ -357,6 +461,7 @@
         reset(id);
       }
       $(function () {
+
         // This function is the main function of all calculation.
         function mainCalculation1(failedNow) {
           var failedIndicator;
@@ -377,10 +482,18 @@
         }
         // Predicting calculations.
         mainCalculation1([0.0, 1.0, 0.0, 1.0]);
+        // adding a chert to html tag for summarize part.
+        addGraph("tabSummarize", "Summarize");
+        // adding data to the cherts
+        reset("Summarize");
+        // adding a chert to html tag for summarize part.
+        addGraph("tabSummarize", "Overview");
+        // adding data to the cherts
+        reset("Overview");
         // Updating Color of each box.
         updateBox();
       });
-</script>
+    </script>
 
     <!-- Highcharts -->
     <script src="Script/highcharts.js"></script>
@@ -434,6 +547,34 @@
         } else {
           window.alert('Please use a modern browser to properly view this template!');
         }
+      }
+
+      var suggestionBanksList = ['HSBC', 'Lloyds Banking Group', 'Royal Bank of Scotland Group', 'Barclays', 'Standard Chartered', 'Co-operative Bank', 'Harrods Bank', 'Tesco Bank'];
+
+      // dealing with input 1 how many companies do you like to calculate.
+      $( "#numsel" ).change(function() {
+        $( "#nameBanks" ).empty();
+        bankCount = $( "#numsel" ).val();
+        for(var i = 0; i < bankCount; ++i) {
+          $( "#nameBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>Bank Name:</span><input type='text' class='form-control' id='bankname"+i+"' placeholder='Please insert banks name' value='"+suggestionBanksList[i]+"'></div><br/>");
+        }
+      });
+      
+      // How many banks in ours calculation?
+      var bankCount = 4;
+      var banksName = ['HSBC', 'Lloyds Banking Group', 'Royal Bank of Scotland Group', 'Barclays'];
+      
+      // Calling only once when we know how many banks.
+      function getBanksName() {
+        banksName = [];
+        for(var i = 0; i < bankCount; ++i) {
+          banksName.push($( "#bankname"+i ).val());
+        }
+      }
+
+      // initial state
+      for(var i = 0; i < bankCount; ++i) {
+          $( "#nameBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>Bank Name:</span><input type='text' class='form-control' id='bankname"+i+"' placeholder='Please insert banks name' value='"+suggestionBanksList[i]+"'></div><br/>");
       }
     </script>
   </body>
