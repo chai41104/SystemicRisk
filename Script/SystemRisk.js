@@ -9,7 +9,7 @@ var exposures = [ 	[ 0.0, 6.0, 0.0, 10.0 ],
 var thresholds = [ 11.0, 5.0, 7.0, 7.0 ];
 var loss = [ 16.0, 20.0, 12.0, 8.0 ];
 var bankCount= thresholds.length;
-
+var failedInitiate = [0.0, 1.0, 0.0, 1.0];
 // failedMore function for checking that are there any company that are a new failure.
 function failedMore(failed, failedNow) {
 	if(failed.length != failedNow.length) {
@@ -168,5 +168,5 @@ function generateAllPossible(bankCount) {
 
 // A $( document ).ready() block.
 $( document ).ready(function() {
-	mainCalculation([0.0, 1.0, 0.0, 1.0]);
+	mainCalculation(failedInitiate);
 });

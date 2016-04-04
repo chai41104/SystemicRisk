@@ -86,12 +86,12 @@
                       <div class="navbar-inner">
                         <div class="container">
                           <ul>
+                            <li><a href="#tabInsertETBanks" data-toggle="tab">Insert Exposures & Thresholds of banks</a></li>
+                            <li><a href="#tabFailed" data-toggle="tab">Insert Failed</a></li>
                             <li><a href="#tabInsertBanks" data-toggle="tab">Insert Banks</a></li>
                             <li><a href="#tabProcessing" data-toggle="tab">Processing</a></li>
                             <li><a href="#tabResult" data-toggle="tab">Result</a></li>
                             <li><a href="#tabSummarize" data-toggle="tab">Summarize</a></li>
-                            <li><a href="#tab5" data-toggle="tab">Fifth</a></li>
-                            <li><a href="#tab6" data-toggle="tab">Sixth</a></li>
                             <li><a href="#tab7" data-toggle="tab">Seventh</a></li>
                           </ul>
                         </div>
@@ -194,12 +194,57 @@
                           </div>
                         </div>
                       </div>
-                      <div class="tab-pane" id="tab5">
-                        5
+                      <div class="tab-pane" id="tabFailed">
+                        <div class="box box-solid">
+                          <div class="box-header">
+                            <h3 class="box-title">Please Indicate that which banks are failed. (Hold shift to select more than one) </h3>
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-insert-body-2">
+                                  <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                          </div>
+                          <div class="box-body collapse in" id="this-insert-body-2">    
+                            <div class="form-group" id="failedBanks">
+                            </div>
+                          </div>
                         </div>
-                      <div class="tab-pane" id="tab6">
-                        6
+                      </div>
+                      <div class="tab-pane" id="tabInsertETBanks">
+                        <div class="box box-solid">
+                          <div class="box-header">
+                            <h3 class="box-title">Please Insert Exposures of Banks</h3>
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-insert-body-3">
+                                  <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                          </div>
+                          <div class="box-body collapse in" id="this-insert-body-3">    
+                            <div class="form-group" id="failedBanks">
+                            </div>
+                          </div>
                         </div>
+                        <div class="box box-solid">
+                          <div class="box-header">
+                            <h3 class="box-title">Please Insert Thresholds of Banks</h3>
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-insert-body-4">
+                                  <i class="fa fa-chevron-up"></i>
+                                </a>
+                            </div>
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Random Thresholds" onclick="randomThresholds()">
+                                  <i class="fa fa-random"></i>
+                                </a>
+                            </div>
+                          </div>
+                          <div class="box-body collapse in" id="this-insert-body-4">    
+                            <div id="thresholdsBanks">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                       <div class="tab-pane" id="tab7">
                         7
                         </div>
@@ -567,15 +612,60 @@
       // Calling only once when we know how many banks.
       function getBanksName() {
         banksName = [];
+        var failedHtml = '<select multiple class="form-control" id="selfailed2">';
         for(var i = 0; i < bankCount; ++i) {
-          banksName.push($( "#bankname"+i ).val());
+          var name = $( "#bankname"+i ).val();
+          banksName.push(name);
+          $( "#failedBanks" ).append('<option>'+name+'</option>');
+          $( "#thresholdsBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>"+name+" (Million pound):</span><input type='number' class='form-control' value='0.0' id='thresholds"+id+"' min='0' data-bind='value:replyNumber' /></div><br/>");
+        }
+        failedHtml += '</select>';
+        $( "#failedBanks" ).append(failedHtml);
+        $( "#selfailed2" ).val([banksName[0]]);
+      }
+
+      // get all Failed bansk from what the user pick.
+      function getFailedBanks() {
+        var lists = $( "#selfailed2" ).val();
+        // reset it.
+        failedInitiate = [];
+        for(var i = 0; i < bankCount; ++i) {
+          failedInitiate.push(0.0);
+        }
+        for(var i = 0; i < lists.length; ++i) {
+          // Simple searching the name of each failed bank.
+          for(var j = 0; j < bankCount; ++j) {
+            // If it's found, label as a failed bank. 
+            if(lists[i] == banksName[j]) {
+              failedInitiate[j] = 1.0;
+              break;
+            }
+          }
         }
       }
 
-      // initial state
-      for(var i = 0; i < bankCount; ++i) {
-          $( "#nameBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>Bank Name:</span><input type='text' class='form-control' id='bankname"+i+"' placeholder='Please insert banks name' value='"+suggestionBanksList[i]+"'></div><br/>");
+      // random thresholds of all banks
+      function randomThresholds() {
+        for(var i = 0; i < bankCount; ++i) {
+          var num = (parseInt(Math.random() * 1000) + 1000) / 100.0;
+          $( "#thresholds" + i ).val(num);
+        }
       }
+
+      // initial state in the case that the user doesn't change anything.
+      function initialState() {
+        var failedHtml = '<select multiple class="form-control" id="selfailed2">';
+        for(var i = 0; i < bankCount; ++i) {
+            $( "#nameBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>Bank Name:</span><input type='text' class='form-control' id='bankname"+i+"' placeholder='Please insert banks name' value='"+suggestionBanksList[i]+"'></div><br/>");
+            $( "#thresholdsBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>"+suggestionBanksList[i]+" (Million pound):</span><input class='form-control' type='number' id='thresholds"+i+"' min='0' data-bind='value:replyNumber' value='0.0' /></div><br/>");
+            failedHtml += '<option>'+suggestionBanksList[i]+'</option>';
+        }
+        failedHtml += '</select>';
+        $( "#failedBanks" ).append(failedHtml);
+        $( "#selfailed2" ).val([suggestionBanksList[0]]);
+      }
+      //thresholdsBanks
+      initialState();
     </script>
   </body>
 </html>
