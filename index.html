@@ -86,13 +86,12 @@
                       <div class="navbar-inner">
                         <div class="container">
                           <ul>
-                            <li><a href="#tabInsertETBanks" data-toggle="tab">Insert Exposures & Thresholds of banks</a></li>
-                            <li><a href="#tabFailed" data-toggle="tab">Insert Failed</a></li>
                             <li><a href="#tabInsertBanks" data-toggle="tab">Insert Banks</a></li>
+                            <li><a href="#tabFailed" data-toggle="tab">Insert Failed</a></li>
+                            <li><a href="#tabInsertETBanks" data-toggle="tab">Insert Exposures & Thresholds of banks</a></li>
                             <li><a href="#tabProcessing" data-toggle="tab">Processing</a></li>
                             <li><a href="#tabResult" data-toggle="tab">Result</a></li>
                             <li><a href="#tabSummarize" data-toggle="tab">Summarize</a></li>
-                            <li><a href="#tab7" data-toggle="tab">Seventh</a></li>
                           </ul>
                         </div>
                       </div>
@@ -219,9 +218,14 @@
                                   <i class="fa fa-chevron-up"></i>
                                 </a>
                             </div>
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Random Exposures" onclick="randomExposures();">
+                                  <i class="fa fa-random"></i>
+                                </a>
+                            </div>
                           </div>
                           <div class="box-body collapse in" id="this-insert-body-3">    
-                            <div class="form-group" id="failedBanks">
+                            <div class="form-group" id="exposures">
                             </div>
                           </div>
                         </div>
@@ -234,7 +238,7 @@
                                 </a>
                             </div>
                             <div class="btn-group pull-right">
-                                <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Random Thresholds" onclick="randomThresholds()">
+                                <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Random Thresholds" onclick="randomThresholds();">
                                   <i class="fa fa-random"></i>
                                 </a>
                             </div>
@@ -245,9 +249,6 @@
                           </div>
                         </div>
                       </div>
-                      <div class="tab-pane" id="tab7">
-                        7
-                        </div>
                       <ul class="pager wizard">
                         <li class="previous first"><a href="#">First</a></li>
                         <li class="previous"><a href="#">Previous</a></li>
@@ -596,7 +597,7 @@
 
       var suggestionBanksList = ['HSBC', 'Lloyds Banking Group', 'Royal Bank of Scotland Group', 'Barclays', 'Standard Chartered', 'Co-operative Bank', 'Harrods Bank', 'Tesco Bank'];
 
-      // dealing with input 1 how many companies do you like to calculate.
+      // dealing with input 1 that how many companies do you like to calculate.
       $( "#numsel" ).change(function() {
         $( "#nameBanks" ).empty();
         bankCount = $( "#numsel" ).val();
@@ -610,7 +611,7 @@
       var banksName = ['HSBC', 'Lloyds Banking Group', 'Royal Bank of Scotland Group', 'Barclays'];
       
       // Calling only once when we know how many banks.
-      function getBanksName() {
+      function setupBanksDetails() {
         banksName = [];
         var failedHtml = '<select multiple class="form-control" id="selfailed2">';
         for(var i = 0; i < bankCount; ++i) {
@@ -647,8 +648,69 @@
       // random thresholds of all banks
       function randomThresholds() {
         for(var i = 0; i < bankCount; ++i) {
+          // random a real (2 digits) between 10 and 20.
           var num = (parseInt(Math.random() * 1000) + 1000) / 100.0;
+          // adding value.
           $( "#thresholds" + i ).val(num);
+        }
+      }
+
+      // random exposures of all banks
+      function randomExposures() {
+        for(var i = 0; i < bankCount; i++) {
+          for(var j = 0; j < bankCount; j++) {
+            if(i != j) {     
+              // random a real (2 digits) between 10 and 20.
+              var num = (parseInt(Math.random() * 1000) + 1000) / 100.0;
+              // adding value.
+              $( "#expo-"+i+"-"+j ).val(num);
+            }
+          }
+        }
+      }
+
+      // get exposures of all banks
+      function getExposures() {
+        // reset value;
+        exposures = [];
+        for(var i = 0; i < bankCount; i++) {
+          var row = [];
+          for(var j = 0; j < bankCount; j++) {
+            if(i != j) {     
+              // pushing value.
+              row.push(parseFloat($( "#expo-"+i+"-"+j ).val()));
+            }
+            else {
+              // pushing zero value for the same banks, i == j.
+              row.push(0.0);
+            }
+          }
+          // pushing a row.
+          exposures.push(row);
+        }
+      }
+
+
+      // get thresholds of all banks
+      function getThresholds() {
+        thresholds = [];
+        for(var i = 0; i < bankCount; ++i) {
+          // pushing value.
+          thresholds.push(parseFloat($( "#thresholds" + i ).val()));
+        }
+      }
+
+      // generate initial matrix of exposures.
+      function generateMatrix(bankCount) {
+        for(var i = 0; i < bankCount; i++) {
+          $('#exposures').append("<div class='input-group'><span class='input-group-addon' disabled>How much money "+banksName[i]+" will loss:</span>");
+          for(var j = 0; j < bankCount; j++) {
+            if(i != j) {
+              $('#exposures').append('<div class="input-group"><span class="input-group-addon" disabled>If '+banksName[j]+' collapses (Million pound):</span><input type="number" class="form-control" min="0" data-bind="value:replyNumber" value="0.0" id="expo-'+i+'-'+j+'"/></div>');
+            }
+          }
+          var br = $('<br>')[0];
+          $('#exposures').append("</div>");
         }
       }
 
@@ -666,6 +728,7 @@
       }
       //thresholdsBanks
       initialState();
+      generateMatrix(bankCount);
     </script>
   </body>
 </html>

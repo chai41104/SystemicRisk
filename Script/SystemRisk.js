@@ -166,7 +166,9 @@ function generateAllPossible(bankCount) {
 	permutation(failed, bankCount - 1, mainCalculation);
 }
 
+/*
 // A $( document ).ready() block.
 $( document ).ready(function() {
 	mainCalculation(failedInitiate);
 });
+*/
