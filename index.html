@@ -86,12 +86,12 @@
                       <div class="navbar-inner">
                         <div class="container">
                           <ul>
-                            <li><a href="#tabInsertBanks" data-toggle="tab">Insert Banks</a></li>
-                            <li><a href="#tabFailed" data-toggle="tab">Insert Failed</a></li>
-                            <li><a href="#tabInsertETBanks" data-toggle="tab">Insert Exposures & Thresholds of banks</a></li>
-                            <li><a href="#tabProcessing" data-toggle="tab">Processing</a></li>
-                            <li><a href="#tabResult" data-toggle="tab">Result</a></li>
-                            <li><a href="#tabSummarize" data-toggle="tab">Summarize</a></li>
+                            <li><a href="#tabInsertBanks" onclick="test();" data-toggle="tab">Insert Banks</a></li>
+                            <li><a href="#tabFailed" onclick="test();" data-toggle="tab">Insert Failed</a></li>
+                            <li><a href="#tabInsertETBanks" onclick="test();" data-toggle="tab">Insert Exposures & Thresholds of banks</a></li>
+                            <li><a href="#tabProcessing" onclick="test();" data-toggle="tab">Processing</a></li>
+                            <li><a href="#tabResult" onclick="test();" data-toggle="tab">Result</a></li>
+                            <li><a href="#tabSummarize" onclick="test();" data-toggle="tab">Summarize</a></li>
                           </ul>
                         </div>
                       </div>
@@ -158,12 +158,12 @@
                         </div>
                         
                       <div class="tab-pane" id="tabProcessing">
-                        <div class="callout callout-info">
+                        <div class="callout callout-info" id="show-waiting">
                           <h4><i align="center" class="fa fa-spinner fa-pulse"></i> All Cherts are processing</h4>
                           <p>Please wait our system to processing cherts before continues.</p>
                         </div>
-                        <div class="callout callout-success">
-                          <h4> Pleseclick continues to see your results</h4>
+                        <div class="callout callout-success hidden" id="show-success">
+                          <h4> Plese click continues to see your results</h4>
                           <p>We have done processing. Please click next to get your results.</p>
                         </div>
                       </div>
@@ -343,6 +343,7 @@
       var Summarize = "Summarize";
       var Overview = "Overview";
       function reset(id) {
+        console.log('aaa');
         if(id == "Overview") {
           $('#container' + id).highcharts({
             chart: {
@@ -395,7 +396,7 @@
               },
 
               xAxis: {
-                  categories: ['Bank1', 'Bank2', 'Bank3', 'Bank4', 'All Banks']
+                  categories: banksName
               },
 
               yAxis: {
@@ -457,6 +458,7 @@
             if(loss == undefined) {
               lossMoney.push(0.0);
               remainMoney.push(thresholds[i]);
+              countremain += thresholds[i];
             }
             // knowing loss.
             else {
@@ -506,6 +508,7 @@
         // adding data to the cherts
         reset(id);
       }
+      /*
       $(function () {
 
         // This function is the main function of all calculation.
@@ -539,6 +542,7 @@
         // Updating Color of each box.
         updateBox();
       });
+      */
     </script>
 
     <!-- Highcharts -->
@@ -604,6 +608,8 @@
         for(var i = 0; i < bankCount; ++i) {
           $( "#nameBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>Bank Name:</span><input type='text' class='form-control' id='bankname"+i+"' placeholder='Please insert banks name' value='"+suggestionBanksList[i]+"'></div><br/>");
         }
+        // Set upto 2.
+        stateAllow = 2;
       });
       
       // How many banks in ours calculation?
@@ -613,16 +619,34 @@
       // Calling only once when we know how many banks.
       function setupBanksDetails() {
         banksName = [];
+        $( "#failedBanks" ).empty();
+        $( "#thresholdsBanks" ).empty();
+
         var failedHtml = '<select multiple class="form-control" id="selfailed2">';
         for(var i = 0; i < bankCount; ++i) {
           var name = $( "#bankname"+i ).val();
           banksName.push(name);
-          $( "#failedBanks" ).append('<option>'+name+'</option>');
-          $( "#thresholdsBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>"+name+" (Million pound):</span><input type='number' class='form-control' value='0.0' id='thresholds"+id+"' min='0' data-bind='value:replyNumber' /></div><br/>");
+          failedHtml += '<option>'+name+'</option>';
+          $( "#thresholdsBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>"+name+" (Million pound):</span><input type='number' class='form-control' value='0.0' id='thresholds"+i+"' min='0' data-bind='value:replyNumber' /></div><br/>");
         }
         failedHtml += '</select>';
         $( "#failedBanks" ).append(failedHtml);
         $( "#selfailed2" ).val([banksName[0]]);
+        generateMatrix(bankCount);
+
+        banksName.push('All banks');
+        // reset the announcement.
+        $('#show-waiting').removeClass('hidden');
+        $('#show-success').addClass('hidden');
+
+        // remove all chert data.
+        labelOverview = [];
+        recordTotalLoss = [];
+        recordRemains = [];
+
+        // remove all graph.
+        $('#tabResult').empty();
+        $('#tabSummarize').empty(); 
       }
 
       // get all Failed bansk from what the user pick.
@@ -653,6 +677,8 @@
           // adding value.
           $( "#thresholds" + i ).val(num);
         }
+        // need to update at least Thresholds
+        stateAllow = 3;
       }
 
       // random exposures of all banks
@@ -701,7 +727,8 @@
       }
 
       // generate initial matrix of exposures.
-      function generateMatrix(bankCount) {
+      function generateMatrix() {
+        $('#exposures').empty();
         for(var i = 0; i < bankCount; i++) {
           $('#exposures').append("<div class='input-group'><span class='input-group-addon' disabled>How much money "+banksName[i]+" will loss:</span>");
           for(var j = 0; j < bankCount; j++) {
@@ -716,19 +743,82 @@
 
       // initial state in the case that the user doesn't change anything.
       function initialState() {
-        var failedHtml = '<select multiple class="form-control" id="selfailed2">';
         for(var i = 0; i < bankCount; ++i) {
             $( "#nameBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>Bank Name:</span><input type='text' class='form-control' id='bankname"+i+"' placeholder='Please insert banks name' value='"+suggestionBanksList[i]+"'></div><br/>");
-            $( "#thresholdsBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>"+suggestionBanksList[i]+" (Million pound):</span><input class='form-control' type='number' id='thresholds"+i+"' min='0' data-bind='value:replyNumber' value='0.0' /></div><br/>");
-            failedHtml += '<option>'+suggestionBanksList[i]+'</option>';
         }
-        failedHtml += '</select>';
-        $( "#failedBanks" ).append(failedHtml);
-        $( "#selfailed2" ).val([suggestionBanksList[0]]);
       }
       //thresholdsBanks
       initialState();
-      generateMatrix(bankCount);
+      
+      // allow how many tab for this user.
+      var stateAllow = 2;
+
+      // check the current tab.
+      function checkState(index) {
+        if(stateAllow >= index) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+
+      // This function is the main function of all calculation.
+      function mainCalculation1(failedNow) {
+        var failedIndicator;
+        var loss;
+        var failed;
+        for(var round = 1; round == 1 || failedMore(failedIndicator, failedNow); round ++) {
+          // At the beginning, setting that failedIndicator is failedNow.
+          failedIndicator = failedNow;
+          // Using Jquery to generate cherts in each round.
+          generateChert(failedIndicator, thresholds, loss, round);
+          // Calculates what banks will fail.
+          loss = failurePropagation(failedIndicator, exposures);
+          // Calculates what companies will fail.
+          failed = PWComparison(thresholds, loss);
+          // merging the new result and old result together.
+          failedNow = PWOr(failed, failedIndicator);
+        }
+      }
+
+      // Call when it was in processing page.
+      function doProcessing() {
+
+        // Predicting calculations.
+        mainCalculation1(failedInitiate);
+        // adding a chert to html tag for summarize part.
+        addGraph("tabSummarize", "Summarize");
+        // adding data to the cherts
+        reset("Summarize");
+        // adding a chert to html tag for summarize part.
+        addGraph("tabSummarize", "Overview");
+        // adding data to the cherts
+        reset("Overview");
+        // Updating Color of each box.
+        updateBox();
+        // change the announcement
+        $('#show-waiting').addClass('hidden');
+        $('#show-success').removeClass('hidden');
+        // do a bit of animation.
+        $('#show-success').animate({
+          opacity: 0.99,
+          }, 100, function() {
+        });
+        // allow all pages.
+        stateAllow = 6;
+      }
+
+      function initiateProcessing() {
+        $('#show-waiting').animate({
+          opacity: 0.99,
+          }, 100, function() {
+            doProcessing();
+        });
+      }
+      function test(){
+        console.log('This function has been called.');
+      }
     </script>
   </body>
 </html>

@@ -44,8 +44,7 @@ var bootstrapWizardCreate = function(element, options) {
 	};
 
 	this.next = function(e) {
-
-		// If we clicked the last then dont activate this
+		// If we clicked the last then don't activate this
 		if(element.hasClass('last')) {
 			return false;
 		}
@@ -56,6 +55,25 @@ var bootstrapWizardCreate = function(element, options) {
 
 		// Did we click the last button
 		$index = obj.nextIndex();
+
+		if(!checkState($index)) {
+			alert("Please insert the input before go futher!");
+			return false;
+		}
+
+		// run JavaScript in each page.
+		if($index == 1) {
+			setupBanksDetails();
+		}
+		else if($index == 2) {
+			getFailedBanks();
+		}
+		else if($index == 3) {
+			getThresholds();
+			getExposures();
+			initiateProcessing();
+		}
+
 		if($index > obj.navigationLength()) {
 		} else {
 			$navigation.find('li:eq('+$index+') a').tab('show');
