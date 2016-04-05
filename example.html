@@ -1,0 +1,72 @@
+<html>
+	<style>
+		.example {
+		    padding: 10px;
+		    border: 1px solid #ccc;
+		}
+		#drop_zone {
+		    border: 2px dashed #bbb;
+		    -moz-border-radius: 5px;
+		    -webkit-border-radius: 5px;
+		    border-radius: 5px;
+		    padding: 25px;
+		    text-align: center;
+		    font: 20pt bold 'Vollkorn';
+		    color: #bbb;
+		}
+	</style>
+
+	<input type="file" id="files" name="files[]" multiple />
+	<div class="example"><div id="drop_zone">Drop files here</div></div>
+	<output id="list"></output>
+	
+	<script>
+	  function handleFileSelect(evt) {
+	    var file = document.getElementById('files').files[0];
+	    if (!files.length) {
+	      alert('Please select a file!');
+	      return;
+	    }
+	    readBlob(files[0]);
+	  }
+
+	  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+	  
+	  function handleFileSelect2(evt) {
+	    evt.stopPropagation();
+	    evt.preventDefault();
+
+	    var files = evt.dataTransfer.files; // FileList object.
+
+	  }
+
+	  function handleDragOver(evt) {
+	    evt.stopPropagation();
+	    evt.preventDefault();
+	    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+	  }
+
+	  // Setup the dnd listeners.
+	  var dropZone = document.getElementById('drop_zone');
+	  dropZone.addEventListener('dragover', handleDragOver, false);
+	  dropZone.addEventListener('drop', handleFileSelect2, false);
+
+	  function readBlob(file) {
+
+	    var start = 0;
+	    var stop = file.size - 1;
+
+	    var reader = new FileReader();
+
+	    // If we use onloadend, we need to check the readyState.
+	    reader.onloadend = function(evt) {
+	      if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+	        document.getElementById('list').textContent = evt.target.result;
+	      }
+	    };
+
+	    var blob = file.slice(start, stop + 1);
+	    reader.readAsBinaryString(blob);
+	  }
+	</script>
+</html>
