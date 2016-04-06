@@ -184,13 +184,15 @@
                           </div>
                           <div class="box-body collapse in" id="this-insert-body-1">    
                             <div class="form-group">
-                              <label for="sel1">How many companies do you like to calculate (maximum : 8 for this beta version)?</label>
+                              <label for="sel1">How many companies do you like to calculate (maximum : 10 for this beta version)?</label>
                               <select class="form-control" id="numsel">
                                 <option>4</option>
                                 <option>5</option>
                                 <option>6</option>
                                 <option>7</option>
                                 <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
                               </select>
                             </div>
                             <div id="nameBanks">
@@ -490,6 +492,66 @@
             }]
           });
         }
+        else if(id == "Summarize") {
+          $('#container' + id).highcharts({
+              chart: {
+                  type: 'column',
+                  options3d: {
+                      enabled: true,
+                      alpha: 15,
+                      beta: 15,
+                      viewDistance: 25,
+                      depth: 40
+                  }
+              },
+
+              title: {
+                  text: 'Total loss in this scenario'
+              },
+
+              xAxis: {
+                  categories: banksName
+              },
+
+              yAxis: {
+                  allowDecimals: true,
+                  title: {
+                      text: 'Money (£ Million)'
+                  }
+              },
+
+              tooltip: {
+                  headerFormat: '<b>{point.key}</b><br>',
+                  pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y}'
+              },
+
+              plotOptions: {
+                  column: {
+                      stacking: 'normal',
+                      depth: 40
+                  }
+              },
+
+              series: [
+              {
+                  name: 'Difference (Loss - Thresholds)',
+                  data: setRemainMoney[setRemainMoney.length - 1],
+                  stack: 'Loss'
+              }, {
+                  name: 'Loss',
+                  data: setLossMoney[setLossMoney.length - 1],
+                  stack: 'Loss'
+              }, {
+                  name: 'Remain',
+                  data: setRemainState[setRemainState.length - 1],
+                  stack: 'Failed'
+              }, {
+                  name: 'Failed',
+                  data: setFailedState[setFailedState.length - 1],
+                  stack: 'Failed'
+              }]
+          });
+        }
         else {
           $('#container' + id).highcharts({
               chart: {
@@ -533,24 +595,29 @@
               series: [
               {
                   name: 'Difference (Loss - Thresholds)',
-                  data: remainMoney,
+                  data: setRemainMoney[id-1],
                   stack: 'Loss'
               }, {
                   name: 'Loss',
-                  data: lossMoney,
+                  data: setLossMoney[id-1],
                   stack: 'Loss'
               }, {
                   name: 'Remain',
-                  data: remainState,
+                  data: setRemainState[id-1],
                   stack: 'Failed'
               }, {
                   name: 'Failed',
-                  data: failedState,
+                  data: setFailedState[id-1],
                   stack: 'Failed'
               }]
           });
         }        
       }
+      var setLossMoney = [];
+      var setRemainMoney  = [];
+      var setFailedState = [];
+      var setRemainState = [];
+      
       function generateChert(failedIndicator, thresholds, loss, id) {
         lossMoney = [];
         remainMoney = [];
@@ -615,6 +682,11 @@
         labelOverview.push("Round " + id);
         // adding all loss.
         remainMoney.push(countremain);
+        // push all data into set.
+        setLossMoney.push(lossMoney);
+        setRemainMoney.push(remainMoney);
+        setFailedState.push(failedState);
+        setRemainState.push(remainState);
         // adding a chert to html tag.
         addGraph("tabResult", id);
         // adding data to the cherts
@@ -675,8 +747,9 @@
           window.alert('Please use a modern browser to properly view this template!');
         }
       }
-
-      var suggestionBanksList = ['HSBC', 'Lloyds Banking Group', 'Royal Bank of Scotland Group', 'Barclays', 'Standard Chartered', 'Co-operative Bank', 'Harrods Bank', 'Tesco Bank'];
+      
+      // list of suggestion banks
+      var suggestionBanksList = ['HSBC', 'Lloyds Bank', 'Royal Bank of Scotland', 'Barclays', 'Standard Chartered', 'Co-operative Bank', 'Harrods Bank', 'Tesco Bank', 'Metro Bank', 'Citibank'];
 
       // dealing with input 1 that how many companies do you like to calculate.
       $( "#numsel" ).change(function() {
@@ -720,6 +793,10 @@
         labelOverview = [];
         recordTotalLoss = [];
         recordRemains = [];
+        setLossMoney = [];
+        setRemainMoney  = [];
+        setFailedState = [];
+        setRemainState = [];
 
         // remove all graph.
         $('#tabResult').empty();
@@ -763,8 +840,8 @@
         for(var i = 0; i < bankCount; i++) {
           for(var j = 0; j < bankCount; j++) {
             if(i != j) {     
-              // random a real (2 digits) between 10 and 20.
-              var num = (parseInt(Math.random() * 1000) + 1000) / 100.0;
+              // random a real (2 digits) between 0 and 20.
+              var num = (parseInt(Math.random() * 1000)) / 100.0;
               // adding value.
               $( "#expo-"+i+"-"+j ).val(num);
             }
@@ -864,6 +941,11 @@
 
         // Predicting calculations.
         mainCalculation1(failedInitiate);
+        // push all data into set for summarize graph.
+        setLossMoney.push(lossMoney);
+        setRemainMoney.push(remainMoney);
+        setFailedState.push(failedState);
+        setRemainState.push(remainState);
         // adding a chert to html tag for summarize part.
         addGraph("tabSummarize", "Summarize");
         // adding data to the cherts
@@ -1088,7 +1170,12 @@
       $('#tab5').attr("data-toggle", "");
       $('#tab6').attr("data-toggle", "");
 
+      // do nothing function.
       function test(id){
+      }
+      // create function for both cases.
+      function getValue(){
+        getFailedBanks();
       }
     </script>
   </body>

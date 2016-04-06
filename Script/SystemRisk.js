@@ -142,7 +142,7 @@ function mainCalculation(failedNow) {
 
 	if(limit_graph >= countGraph) {
 		// adding a chert to html tag.
-		generateChertH(failedNow, thresholds, loss, countGraph + 1, "Example Scenario Result");
+		generateChertH(failedNow, thresholds, loss, countGraph + 1, "Example a Scenario Result #");
 		// count as a graph has been added.
 		countGraph++;
 	}
@@ -164,8 +164,6 @@ function mainCalculation(failedNow) {
 	return countloss;
 }
 
-var mapProb = [];
-
 // This do permutation.
 function permutation(failed, index, workingFunction) {
 	// Need to be more than 0, index of array can't be negative.
@@ -178,11 +176,11 @@ function permutation(failed, index, workingFunction) {
 	else {
 		// call mainCalculation.
 		var totalloss = workingFunction(failed);
-
+		// get the probability of this scenario.
 		var prob = probScenario(failureProb, failed);
-
+		// convert to two digits number.
 		prob = Math.round(prob*100)/100;
-
+		// pushing all results in to the pair of array.
 		mapProb.push([totalloss, prob]);
 		// push it in group
 		if(totalloss < 20.0) {
@@ -219,10 +217,47 @@ function generateAllPossible(bankCount) {
 	permutation(failed, bankCount - 1, mainCalculation);
 	// adding a chert to html tag for summarize part.
     addGraphH("tabSummarize", "Probabilities", "Visualizing Loss");
-    // adding data to the cherts
+    // adding data to the cherts.
     reset("Probabilities");
     // adding a chert to html tag for summarize part.
     addGraphH("tabSummarize", "Groups", "Displaying Losses in");
-    // adding data to the cherts
-    reset("Groups");    
+    // adding data to the cherts.
+    reset("Groups");
+    // do cumulative value.
+    cumulation(mapProb);
+    // need to add to graph.
+    addGraphH("tabSummarize", "Cumulation", "Displaying The ");
+    // adding data to the cherts.
+    reset("Cumulation");
+    // do cumulative value.
+}
+
+
+function cumulation(mapProb) {
+	// reset value;
+	mapCumu = [];
+
+	// sort depending on the loss.
+	mapProb.sort(function (a,b) {
+		if(a[0] > b[0])
+		{
+			return 1;
+		}
+		else if(a[0] < b[0])
+		{
+			return -1;
+		}
+		else {
+			return 0;
+		}
+	});
+
+	var sum = 0.0;
+	
+	// sum probrability	
+	for(var i = 0; i < mapProb.length; ++i) {
+		sum += mapProb[i][1];
+		mapCumu.push([mapProb[i][0], sum]);
+	}
+
 }
