@@ -175,7 +175,7 @@
                       <div class="tab-pane" id="tabInsertBanks">
                         <div class="box box-solid">
                           <div class="box-header">
-                            <h3 class="box-title">Please Answer All Questions</h3>
+                            <h3 class="box-title">Please pick a number of companies and their names</h3>
                             <div class="btn-group pull-right">
                                 <a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-insert-body-1">
                                   <i class="fa fa-chevron-up"></i>
@@ -253,11 +253,12 @@
                                   <div class="modal-header">
                                       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                       <h4 class="modal-title" id="myModalLabel" style="color: black">Get Exposures via URL</h4>
+                                      <label>The example link is for 10 companies input data.</label>
                                   </div>
                                   <div class="modal-body">
                                     <div class='input-group'>
                                       <span class='input-group-addon' disabled>URL</span>
-                                      <input type='text' class='form-control' id='ExposuresURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInput'>
+                                      <input type='text' class='form-control' id='ExposuresURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInputFor10'>
                                     </div>
                                   </div>
                                   <div class="modal-footer">
@@ -274,9 +275,10 @@
                                   <div class="modal-header">
                                       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                       <h4 class="modal-title" id="myModalLabel" style="color: black">Get Exposures via CSV file.</h4>
+                                      <label style="color: black">The example file can be found at exposuresFor4.csv</label>
                                   </div>
                                   <div class="modal-body">
-                                    <div class='input-group'>
+                                    <div class='input-group' style="color: black">
                                       <lable> Upload CSV file : </label><input type="file" id="fileExposures" name="files[]" />
                                     </div>
                                   </div>
@@ -320,11 +322,12 @@
                                       <div class="modal-header">
                                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                           <h4 class="modal-title" id="myModalLabel" style="color: black">Get Thresholds via URL</h4>
+                                          <label style="color: black">The example link is for 10 companies input data.</label>
                                       </div>
                                       <div class="modal-body">
                                         <div class='input-group'>
                                           <span class='input-group-addon' disabled>URL</span>
-                                          <input type='text' class='form-control' id='ThresholdsURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInput'>
+                                          <input type='text' class='form-control' id='ThresholdsURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInputFor10'>
                                         </div>
                                       </div>
                                       <div class="modal-footer">
@@ -341,9 +344,10 @@
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                         <h4 class="modal-title" id="myModalLabel" style="color: black">Get Thresholds via CSV file.</h4>
+                                        <label style="color: black">The example file can be found at thresholdsFor4.csv</label>
                                     </div>
                                     <div class="modal-body">
-                                      <div class='input-group'>
+                                      <div class='input-group' style="color: black">
                                         <lable> Upload Thresholds from CSV file : </label><input type="file" id="fileThresholds" name="files[]" />
                                       </div>
                                     </div>
@@ -365,7 +369,7 @@
                         </div>
                       </div>
                       <ul class="pager wizard">
-                        <li class="previous first"><a href="#">First</a></li>
+                        <li class="previous first"><a href="#">Start again</a></li>
                         <li class="previous"><a href="#">Previous</a></li>
                         <li class="next"><a href="#">Next</a></li>
                       </ul>
@@ -464,7 +468,7 @@
                 type: 'line'
             },
             title: {
-                text: 'Total Loss and Remaining fund in all banks'
+                text: 'Total loss and remaining funds (threshold - loss) of all banks.'
             },
             xAxis: {
                 categories: labelOverview
@@ -474,6 +478,9 @@
                   title: {
                       text: 'Money (£ Million)'
                   }
+            },
+            tooltip: {
+              valueSuffix: '£ Million'
             },
             plotOptions: {
                 line: {
@@ -487,7 +494,7 @@
                 name: 'Total Loss',
                 data: recordTotalLoss
             }, {
-                name: 'Total Remain',
+                name: 'Cash Remain',
                 data: recordRemains
             }]
           });
@@ -506,7 +513,7 @@
               },
 
               title: {
-                  text: 'Total loss in this scenario'
+                  text: 'Total loss and remaining funds (threshold - loss) in this scenario'
               },
 
               xAxis: {
@@ -534,7 +541,7 @@
 
               series: [
               {
-                  name: 'Difference (Loss - Thresholds)',
+                  name: 'Remaining fund (Loss - Threshold)',
                   data: setRemainMoney[setRemainMoney.length - 1],
                   stack: 'Loss'
               }, {
@@ -594,7 +601,7 @@
 
               series: [
               {
-                  name: 'Difference (Loss - Thresholds)',
+                  name: 'Remaining fund (Loss - Threshold)',
                   data: setRemainMoney[id-1],
                   stack: 'Loss'
               }, {
@@ -777,7 +784,7 @@
           var name = $( "#bankname"+i ).val();
           banksName.push(name);
           failedHtml += '<option>'+name+'</option>';
-          $( "#thresholdsBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>"+name+" (Million pound):</span><input type='number' class='form-control' value='0.0' id='thresholds"+i+"' min='0' data-bind='value:replyNumber' /></div><br/>");
+          $( "#thresholdsBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>"+name+" (£ Million):</span><input type='number' class='form-control' value='0.0' id='thresholds"+i+"' min='0' data-bind='value:replyNumber' /></div><br/>");
         }
         failedHtml += '</select>';
         $( "#failedBanks" ).append(failedHtml);
@@ -884,10 +891,10 @@
       function generateMatrix() {
         $('#exposures').empty();
         for(var i = 0; i < bankCount; i++) {
-          $('#exposures').append("<div class='input-group'><span class='input-group-addon' disabled>How much money "+banksName[i]+" will loss:</span>");
+          $('#exposures').append("<div class='input-group'><span class='input-group-addon' disabled>How much money "+banksName[i]+" will lose:</span>");
           for(var j = 0; j < bankCount; j++) {
             if(i != j) {
-              $('#exposures').append('<div class="input-group"><span class="input-group-addon" disabled>If '+banksName[j]+' collapses (Million pound):</span><input type="number" class="form-control" min="0" data-bind="value:replyNumber" value="0.0" id="expo-'+i+'-'+j+'"/></div>');
+              $('#exposures').append('<div class="input-group"><span class="input-group-addon" disabled>If '+banksName[j]+' collapses (£ Million):</span><input type="number" class="form-control" min="0" data-bind="value:replyNumber" value="0.0" id="expo-'+i+'-'+j+'"/></div>');
             }
           }
           var br = $('<br>')[0];

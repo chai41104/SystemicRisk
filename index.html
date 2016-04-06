@@ -95,7 +95,7 @@
                             <li><a id="tab2" href="#tabFailed" onclick="test(2);" data-toggle="tab">Insert Failure Probability</a></li>
                             <li><a id="tab3" href="#tabInsertETBanks" onclick="test(3);" data-toggle="tab">Insert Exposures & Thresholds of banks</a></li>
                             <li><a id="tab4" href="#tabProcessing" onclick="test(4);" data-toggle="tab">Processing</a></li>
-                            <li><a id="tab5" href="#tabResult" onclick="test(5);" data-toggle="tab">Result</a></li>
+                            <li><a id="tab5" href="#tabResult" onclick="test(5);" data-toggle="tab">Showing Sample Scenarios</a></li>
                             <li><a id="tab6" href="#tabSummarize" onclick="test(6);" data-toggle="tab">Summarize</a></li>
                           </ul>
                         </div>
@@ -231,11 +231,12 @@
                                       <div class="modal-header">
                                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                           <h4 class="modal-title" id="myModalLabel" style="color: black">Get Failure Probability via URL</h4>
+                                          <label style="color: black">The example link is for 10 companies input data.</label>
                                       </div>
                                       <div class="modal-body">
                                         <div class='input-group'>
                                           <span class='input-group-addon' disabled>URL</span>
-                                          <input type='text' class='form-control' id='FailProbURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInput'>
+                                          <input type='text' class='form-control' id='FailProbURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInputFor10'>
                                         </div>
                                       </div>
                                       <div class="modal-footer">
@@ -252,6 +253,7 @@
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                         <h4 class="modal-title" id="myModalLabel" style="color: black">Get Failure Probability via CSV file.</h4>
+                                        <label style="color: black">The example file can be found at failureProbFor4.csv</label>
                                     </div>
                                     <div class="modal-body">
                                       <div class='input-group'>
@@ -295,7 +297,7 @@
                               </a>
                             </div>
                             <div class="btn-group pull-right">
-                              <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#ExposuresURL-modal" title="Upload Exposures via URL.">
+                              <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#ExposuresURL" title="Upload Exposures via URL.">
                                 <i class="fa fa-upload"></i>
                               </a>
                             </div>
@@ -306,17 +308,18 @@
                           </div>
                         </div>
                         <!-- beginning of modle for URL -->
-                        <div class="modal fade" id="ExposuresURL-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="ExposuresURL" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                           <div class="modal-dialog">
                               <div class="modal-content">
                                   <div class="modal-header">
                                       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                       <h4 class="modal-title" id="myModalLabel" style="color: black">Get Exposures via URL</h4>
+                                      <label style="color: black">The example link is for 10 companies input data.</label>
                                   </div>
                                   <div class="modal-body">
                                     <div class='input-group'>
                                       <span class='input-group-addon' disabled>URL</span>
-                                      <input type='text' class='form-control' id='ExposuresURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInput'>
+                                      <input type='text' class='form-control' id='ExposuresURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInputFor10'>
                                     </div>
                                   </div>
                                   <div class="modal-footer">
@@ -333,9 +336,10 @@
                                   <div class="modal-header">
                                       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                       <h4 class="modal-title" id="myModalLabel" style="color: black">Get Exposures via CSV file.</h4>
+                                      <label style="color: black">The example file can be found at exposuresFor4.csv</label>
                                   </div>
                                   <div class="modal-body">
-                                    <div class='input-group'>
+                                    <div class='input-group' style="color: black">
                                       <lable> Upload CSV file : </label><input type="file" id="fileExposures" name="files[]" />
                                     </div>
                                   </div>
@@ -368,22 +372,23 @@
                               </a>
                             </div>
                             <div class="btn-group pull-right">
-                              <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#ThresholdsURL-modal" title="Upload Thresholds via URL.">
+                              <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#ThresholdsURL" title="Upload Thresholds via URL.">
                                 <i class="fa fa-upload"></i>
                               </a>
                             </div>
                             <!-- beginning of modle for URL -->
-                            <div class="modal fade" id="ThresholdsURL-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="ThresholdsURL" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                               <div class="modal-dialog">
                                   <div class="modal-content">
                                       <div class="modal-header">
                                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                           <h4 class="modal-title" id="myModalLabel" style="color: black">Get Thresholds via URL</h4>
+                                          <label style="color: black">The example link is for 10 companies input data.</label>
                                       </div>
                                       <div class="modal-body">
                                         <div class='input-group'>
                                           <span class='input-group-addon' disabled>URL</span>
-                                          <input type='text' class='form-control' id='ThresholdsURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInput'>
+                                          <input type='text' class='form-control' id='ThresholdsURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInputFor10'>
                                         </div>
                                       </div>
                                       <div class="modal-footer">
@@ -400,9 +405,10 @@
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                                         <h4 class="modal-title" id="myModalLabel" style="color: black">Get Thresholds via CSV file.</h4>
+                                        <label style="color: black">The example file can be found at thresholdsFor4.csv</label>
                                     </div>
                                     <div class="modal-body">
-                                      <div class='input-group'>
+                                      <div class='input-group' style="color: black">
                                         <lable> Upload Thresholds from CSV file : </label><input type="file" id="fileThresholds" name="files[]" />
                                       </div>
                                     </div>
@@ -424,7 +430,7 @@
                         </div>
                       </div>
                       <ul class="pager wizard">
-                        <li class="previous first"><a href="#">First</a></li>
+                        <li class="previous first"><a href="#">Start again</a></li>
                         <li class="previous"><a href="#">Previous</a></li>
                         <li class="next"><a href="#">Next</a></li>
                       </ul>
@@ -551,7 +557,7 @@
               },
 
               title: {
-                  text: 'Displaying Losses in Groups'
+                  text: 'Displaying Losses in Groups of All Scenarios'
               },
 
               xAxis: {
@@ -655,7 +661,7 @@
                 type: 'line'
             },
             title: {
-                text: 'Displaying Cumulative Probability'
+                text: 'Displaying Cumulative Probability of All Scenarios'
             },
             xAxis: {
                 allowDecimals: true,
@@ -697,7 +703,7 @@
               },
 
               title: {
-                  text: 'Total loss in this scenario'
+                  text: 'Total loss and remaining funds (threshold - loss) in this scenario'
               },
 
               xAxis: {
