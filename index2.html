@@ -620,41 +620,6 @@
         // adding data to the cherts
         reset(id);
       }
-      /*
-      $(function () {
-
-        // This function is the main function of all calculation.
-        function mainCalculation1(failedNow) {
-          var failedIndicator;
-          var loss;
-          var failed;
-          for(var round = 1; round == 1 || failedMore(failedIndicator, failedNow); round ++) {
-            // At the beginning, setting that failedIndicator is failedNow.
-            failedIndicator = failedNow;
-            // Using Jquery to generate cherts in each round.
-            generateChert(failedIndicator, thresholds, loss, round);
-            // Calculates what banks will fail.
-            loss = failurePropagation(failedIndicator, exposures);
-            // Calculates what companies will fail.
-            failed = PWComparison(thresholds, loss);
-            // merging the new result and old result together.
-            failedNow = PWOr(failed, failedIndicator);
-          }
-        }
-        // Predicting calculations.
-        mainCalculation1([0.0, 1.0, 0.0, 1.0]);
-        // adding a chert to html tag for summarize part.
-        addGraph("tabSummarize", "Summarize");
-        // adding data to the cherts
-        reset("Summarize");
-        // adding a chert to html tag for summarize part.
-        addGraph("tabSummarize", "Overview");
-        // adding data to the cherts
-        reset("Overview");
-        // Updating Color of each box.
-        updateBox();
-      });
-      */
     </script>
 
     <!-- Highcharts -->
@@ -721,7 +686,7 @@
           $( "#nameBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>Bank Name:</span><input type='text' class='form-control' id='bankname"+i+"' placeholder='Please insert banks name' value='"+suggestionBanksList[i]+"'></div><br/>");
         }
         // Set upto 2.
-        stateAllow = 2;
+        stateAllow = 3;
       });
       
       // How many banks in ours calculation?
@@ -863,7 +828,7 @@
       initialState();
       
       // allow how many tab for this user.
-      var stateAllow = 2;
+      var stateAllow = 3;
 
       // check the current tab.
       function checkState(index) {
@@ -1123,7 +1088,7 @@
       $('#tab5').attr("data-toggle", "");
       $('#tab6').attr("data-toggle", "");
 
-      function test(){
+      function test(id){
       }
     </script>
   </body>

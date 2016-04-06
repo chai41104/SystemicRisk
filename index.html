@@ -92,7 +92,7 @@
                         <div class="container">
                           <ul>
                             <li><a id="tab1" href="#tabInsertBanks" onclick="test(1);" data-toggle="tab">Insert Banks</a></li>
-                            <li><a id="tab2" href="#tabFailed" onclick="test(2);" data-toggle="tab">Insert Failed</a></li>
+                            <li><a id="tab2" href="#tabFailed" onclick="test(2);" data-toggle="tab">Insert Failure Probability</a></li>
                             <li><a id="tab3" href="#tabInsertETBanks" onclick="test(3);" data-toggle="tab">Insert Exposures & Thresholds of banks</a></li>
                             <li><a id="tab4" href="#tabProcessing" onclick="test(4);" data-toggle="tab">Processing</a></li>
                             <li><a id="tab5" href="#tabResult" onclick="test(5);" data-toggle="tab">Result</a></li>
@@ -201,15 +201,74 @@
                       <div class="tab-pane" id="tabFailed">
                         <div class="box box-solid">
                           <div class="box-header">
-                            <h3 class="box-title">Please Indicate that which banks are failed. (Hold shift to select more than one) </h3>
+                            <h3 class="box-title">Please Insert Failure Probability of Banks</h3>
                             <div class="btn-group pull-right">
-                                <a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-insert-body-2">
-                                  <i class="fa fa-chevron-up"></i>
-                                </a>
+                              <a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-insert-body-2">
+                                <i class="fa fa-chevron-up"></i>
+                              </a>
+                            </div>
+                            <div class="btn-group pull-right">
+                              <a class="btn btn-default btn-sm" data-toggle="tooltip" title="Random Failure Probability" onclick="randomFailProb();">
+                                <i class="fa fa-random"></i>
+                              </a>
+                            </div>
+                            <div class="btn-group pull-right">
+                              <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#FailProbCSV" title="Upload Failure Probability via CSV file.">
+                                <i class="fa fa-upload"></i>
+                              </a>
+                            </div>
+                            <div class="btn-group pull-right">
+                              <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#FailProbURL-modal" title="Upload Failure Probability via URL.">
+                                <i class="fa fa-upload"></i>
+                              </a>
+                            </div>
+                            <!-- beginning of modle for URL -->
+                            <div class="modal fade" id="FailProbURL-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                  <div class="modal-content">
+                                      <div class="modal-header">
+                                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                          <h4 class="modal-title" id="myModalLabel" style="color: black">Get Failure Probability via URL</h4>
+                                      </div>
+                                      <div class="modal-body">
+                                        <div class='input-group'>
+                                          <span class='input-group-addon' disabled>URL</span>
+                                          <input type='text' class='form-control' id='FailProbURL' placeholder='Please insert URL' value='http://chai41104.github.io/exampleInput'>
+                                        </div>
+                                      </div>
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="uploadFailProbURL();">Get</button>
+                                      </div>
+                                  </div>
+                              </div>
+                            </div>
+                            <!-- beginning of modle for CSV File -->
+                            <div class="modal fade" id="FailProbCSV" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                              <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title" id="myModalLabel" style="color: black">Get Failure Probability via CSV file.</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                      <div class='input-group'>
+                                        <lable> Upload Failure Probability from CSV file : </label><input type="file" id="fileFailProb" name="files[]" />
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <div class='input-group'>
+                                        <div id="cover_drop_zone">
+                                          <div id="drop_FailProb" class="drop_zone">Or drop CSV file here</div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                              </div>
                             </div>
                           </div>
                           <div class="box-body collapse in" id="this-insert-body-2">    
-                            <div class="form-group" id="failedBanks">
+                            <div id="FailProbBanks">
                             </div>
                           </div>
                         </div>
@@ -234,7 +293,7 @@
                               </a>
                             </div>
                             <div class="btn-group pull-right">
-                              <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#ExposuresURL" title="Upload Exposures via URL.">
+                              <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#ExposuresURL-modal" title="Upload Exposures via URL.">
                                 <i class="fa fa-upload"></i>
                               </a>
                             </div>
@@ -245,7 +304,7 @@
                           </div>
                         </div>
                         <!-- beginning of modle for URL -->
-                        <div class="modal fade" id="ExposuresURL" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="ExposuresURL-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                           <div class="modal-dialog">
                               <div class="modal-content">
                                   <div class="modal-header">
@@ -307,12 +366,12 @@
                               </a>
                             </div>
                             <div class="btn-group pull-right">
-                              <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#ThresholdsURL" title="Upload Thresholds via URL.">
+                              <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#ThresholdsURL-modal" title="Upload Thresholds via URL.">
                                 <i class="fa fa-upload"></i>
                               </a>
                             </div>
                             <!-- beginning of modle for URL -->
-                            <div class="modal fade" id="ThresholdsURL" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="ThresholdsURL-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                               <div class="modal-dialog">
                                   <div class="modal-content">
                                       <div class="modal-header">
@@ -431,9 +490,25 @@
             elc[0].className = "fa fa-chevron-down";
         }
       }
+      // generate graph.
       function addGraph(mainEle, id) {
         var newEle = '<div class="box box-solid" id="this-graph-'+id+'"><div class="box-header">'
                     +'<h3 class="box-title">Round '+id+'</h3><div class="btn-group pull-right">'
+                    +'<a href="#" class="btn btn-default btn-sm" data-toggle="dropdown" data-placement="left" title="Theme" aria-expanded="false"><i class="fa fa-wrench"></i></a>'
+                    +'<ul class="dropdown-menu"><li><a href="#" onclick="GridLight('+id+')" style="color:black;">Grid-Light</a></li>'
+                    +'<li><a href="#" onclick="SandSignika('+id+')" style="color:black;">Sand-Signika</a></li>'
+                    +'<li><a href="#" onclick="DarkTheme('+id+')" style="color:black;">Dark-Theme</a></li>'
+                    +'</ul><a class="btn btn-default btn-sm" onclick="change(this)" data-toggle="collapse" data-target="#this-graph-body-'+id+'">'
+                    +'<i class="fa fa-chevron-up"></i></a>'
+                    +'<a href="#" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="left" title="hide" data-target="#this-graph-'+id+'" data-dismiss="alert">'
+                    +'<i class="fa fa-times"></i></a></div></div>'
+                    +'<div class="box-body collapse in" id="this-graph-body-'+id+'"><div id="container'+id+'"></div></div></div>';
+        $('#' + mainEle).append(newEle);
+      }
+      // generate graph with header.
+      function addGraphH(mainEle, id, header) {
+        var newEle = '<div class="box box-solid" id="this-graph-'+id+'"><div class="box-header">'
+                    +'<h3 class="box-title">'+header+' '+id+'</h3><div class="btn-group pull-right">'
                     +'<a href="#" class="btn btn-default btn-sm" data-toggle="dropdown" data-placement="left" title="Theme" aria-expanded="false"><i class="fa fa-wrench"></i></a>'
                     +'<ul class="dropdown-menu"><li><a href="#" onclick="GridLight('+id+')" style="color:black;">Grid-Light</a></li>'
                     +'<li><a href="#" onclick="SandSignika('+id+')" style="color:black;">Sand-Signika</a></li>'
@@ -451,43 +526,123 @@
       var remainState;
       var recordTotalLoss = [];
       var recordRemains = [];
-      var labelOverview = [];
       // defining the word.
       var Summarize = "Summarize";
-      var Overview = "Overview";
+      var Groups = "Groups";
+      var Probabilities = "Probabilities";
+
+      var mapProb = [];
       function reset(id) {
-        if(id == "Overview") {
+        if(id == "Groups") {
           $('#container' + id).highcharts({
-            chart: {
-                type: 'line'
-            },
-            title: {
-                text: 'Total Loss and Remaining fund in all banks'
-            },
-            xAxis: {
-                categories: labelOverview
-            },
-            yAxis: {
+              chart: {
+                  type: 'column',
+                  options3d: {
+                      enabled: true,
+                      alpha: 15,
+                      beta: 15,
+                      viewDistance: 25,
+                      depth: 40
+                  }
+              },
+
+              title: {
+                  text: 'Displaying Losses in Groups'
+              },
+
+              xAxis: {
+                  categories: ['Less than 20 million pounds', 'Between 20 and 40 million pounds', 'Between 40 and 60 million pounds', 'Between 60 and 80 million pounds', 'More than 80 million pounds']
+              },
+
+              yAxis: {
                   allowDecimals: true,
                   title: {
                       text: 'Money (£ Million)'
                   }
+              },
+
+              tooltip: {
+                  headerFormat: '<b>{point.key}</b><br>',
+                  pointFormat: '<span style="color:{series.color}">\u25CF</span> {categories}: {point.y}'
+              },
+
+              plotOptions: {
+                  column: {
+                      stacking: 'normal',
+                      depth: 40
+                  }
+              },
+
+              series: [
+              {
+                  name: 'Probabilities',
+                  data: groupProb,
+                  stack: 'Probabilities'
+              }]
+          });
+        }
+        else if(id == "Probabilities") {
+          $('#container' + id).highcharts({
+            chart: {
+                type: 'scatter',
+                zoomType: 'xy'
+            },
+            title: {
+                text: 'Loss Versus Probabilities of All Possible Scenarios'
+            },
+            xAxis: {
+                title: {
+                    enabled: true,
+                    text: 'Loss (Million Pound)'
+                },
+                startOnTick: true,
+                endOnTick: true,
+                showLastLabel: true
+            },
+            yAxis: {
+                title: {
+                    text: 'Probabilities'
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                verticalAlign: 'top',
+                x: 100,
+                y: 70,
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+                borderWidth: 1
             },
             plotOptions: {
-                line: {
-                    dataLabels: {
-                        enabled: true
+                scatter: {
+                    marker: {
+                        radius: 5,
+                        states: {
+                            hover: {
+                                enabled: true,
+                                lineColor: 'rgb(100,100,100)'
+                            }
+                        }
                     },
-                    enableMouseTracking: false
+                    states: {
+                        hover: {
+                            marker: {
+                                enabled: false
+                            }
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<b>Loss Probabilities</b><br>',
+                        pointFormat: '{point.x} million pound, Probability is {point.y}'
+                    }
                 }
             },
             series: [{
-                name: 'Total Loss',
-                data: recordTotalLoss
-            }, {
-                name: 'Total Remain',
-                data: recordRemains
-            }]
+                name: 'Loss Probabilities',
+                color: 'rgba(223, 83, 83, .5)',
+                data: mapProb
+              }]
           });
         }
         else {
@@ -551,7 +706,7 @@
           });
         }        
       }
-      function generateChert(failedIndicator, thresholds, loss, id) {
+      function generateChertH(failedIndicator, thresholds, loss, id, header) {
         lossMoney = [];
         remainMoney = [];
         failedState = [];
@@ -566,39 +721,22 @@
             failedState.push(0.0);
             remainState.push(1.0);
 
-            // Don't know yet. Assuming that the loss is 0.
-            if(loss == undefined) {
-              lossMoney.push(0.0);
-              remainMoney.push(thresholds[i]);
-              countremain += thresholds[i];
-            }
-            // knowing loss.
-            else {
-              lossMoney.push(loss[i]);
-              countloss += loss[i];
-              remainMoney.push(thresholds[i]-loss[i]);
-              countremain += thresholds[i]-loss[i];
-            }
+            lossMoney.push(loss[i]);
+            countloss += loss[i];
+            remainMoney.push(thresholds[i]-loss[i]);
+            countremain += thresholds[i]-loss[i];
+          
           } 
           // bank did failed.
           else {
             failedState.push(1.0);
             remainState.push(0.0);
 
-            // Don't know yet. Assuming that the loss is the threshold.
-            if(loss == undefined) {
-              lossMoney.push(thresholds[i]);
-              countloss += thresholds[i];
-              remainMoney.push(0.0);
-            }
-            // knowing loss. then, adding the highest one.
-            else {
-              var lost = (loss[i] >= thresholds[i]? loss[i]: thresholds[i]);
-              countloss += lost;
-              lossMoney.push(lost);
-              remainMoney.push(thresholds[i]-lost);
-              countremain += thresholds[i]-lost;
-            }
+            var lost = (loss[i] >= thresholds[i]? loss[i]: thresholds[i]);
+            countloss += lost;
+            lossMoney.push(lost);
+            remainMoney.push(thresholds[i]-lost);
+            countremain += thresholds[i]-lost;
           }
         }
         // adding how many banks are servired.
@@ -611,50 +749,13 @@
         recordTotalLoss.push(countloss);
         // record total thresholds in each round.
         recordRemains.push(countremain);
-        // record label in each round.
-        labelOverview.push("Round " + id);
         // adding all loss.
         remainMoney.push(countremain);
         // adding a chert to html tag.
-        addGraph("tabResult", id);
+        addGraphH("tabResult", id, header);
         // adding data to the cherts
         reset(id);
       }
-      /*
-      $(function () {
-
-        // This function is the main function of all calculation.
-        function mainCalculation1(failedNow) {
-          var failedIndicator;
-          var loss;
-          var failed;
-          for(var round = 1; round == 1 || failedMore(failedIndicator, failedNow); round ++) {
-            // At the beginning, setting that failedIndicator is failedNow.
-            failedIndicator = failedNow;
-            // Using Jquery to generate cherts in each round.
-            generateChert(failedIndicator, thresholds, loss, round);
-            // Calculates what banks will fail.
-            loss = failurePropagation(failedIndicator, exposures);
-            // Calculates what companies will fail.
-            failed = PWComparison(thresholds, loss);
-            // merging the new result and old result together.
-            failedNow = PWOr(failed, failedIndicator);
-          }
-        }
-        // Predicting calculations.
-        mainCalculation1([0.0, 1.0, 0.0, 1.0]);
-        // adding a chert to html tag for summarize part.
-        addGraph("tabSummarize", "Summarize");
-        // adding data to the cherts
-        reset("Summarize");
-        // adding a chert to html tag for summarize part.
-        addGraph("tabSummarize", "Overview");
-        // adding data to the cherts
-        reset("Overview");
-        // Updating Color of each box.
-        updateBox();
-      });
-      */
     </script>
 
     <!-- Highcharts -->
@@ -720,8 +821,8 @@
         for(var i = 0; i < bankCount; ++i) {
           $( "#nameBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>Bank Name:</span><input type='text' class='form-control' id='bankname"+i+"' placeholder='Please insert banks name' value='"+suggestionBanksList[i]+"'></div><br/>");
         }
-        // Set upto 2.
-        stateAllow = 2;
+        // Set upto 3.
+        stateAllow = 3;
       });
       
       // How many banks in ours calculation?
@@ -731,19 +832,16 @@
       // Calling only once when we know how many banks.
       function setupBanksDetails() {
         banksName = [];
-        $( "#failedBanks" ).empty();
+        $( "#FailProbBanks" ).empty();
         $( "#thresholdsBanks" ).empty();
 
-        var failedHtml = '<select multiple class="form-control" id="selfailed2">';
         for(var i = 0; i < bankCount; ++i) {
           var name = $( "#bankname"+i ).val();
           banksName.push(name);
-          failedHtml += '<option>'+name+'</option>';
+          $( "#FailProbBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>"+name+" (Million pound):</span><input type='number' class='form-control' value='0.0' id='FailProb"+i+"' min='0' data-bind='value:replyNumber' /></div><br/>");
           $( "#thresholdsBanks" ).append("<div class='input-group'><span class='input-group-addon' disabled>"+name+" (Million pound):</span><input type='number' class='form-control' value='0.0' id='thresholds"+i+"' min='0' data-bind='value:replyNumber' /></div><br/>");
         }
-        failedHtml += '</select>';
-        $( "#failedBanks" ).append(failedHtml);
-        $( "#selfailed2" ).val([banksName[0]]);
+        
         generateMatrix(bankCount);
 
         banksName.push('All banks');
@@ -752,33 +850,11 @@
         $('#show-success').addClass('hidden');
 
         // remove all chert data.
-        labelOverview = [];
-        recordTotalLoss = [];
-        recordRemains = [];
+        mapProb = [];
 
         // remove all graph.
         $('#tabResult').empty();
         $('#tabSummarize').empty(); 
-      }
-
-      // get all Failed bansk from what the user pick.
-      function getFailedBanks() {
-        var lists = $( "#selfailed2" ).val();
-        // reset it.
-        failedInitiate = [];
-        for(var i = 0; i < bankCount; ++i) {
-          failedInitiate.push(0.0);
-        }
-        for(var i = 0; i < lists.length; ++i) {
-          // Simple searching the name of each failed bank.
-          for(var j = 0; j < bankCount; ++j) {
-            // If it's found, label as a failed bank. 
-            if(lists[i] == banksName[j]) {
-              failedInitiate[j] = 1.0;
-              break;
-            }
-          }
-        }
       }
 
       // random thresholds of all banks
@@ -793,13 +869,25 @@
         stateAllow = 3;
       }
 
+      // random thresholds of all banks
+      function randomFailProb() {
+        for(var i = 0; i < bankCount; ++i) {
+          // random a real (2 digits) between 0 and 0.25.
+          var num = Math.floor(Math.random() * 1000 / 4.0) / 1000.0;
+          // adding value.
+          $( "#FailProb" + i ).val(num);
+        }
+        // need to update at least Thresholds
+        stateAllow = 3;
+      }
+
       // random exposures of all banks
       function randomExposures() {
         for(var i = 0; i < bankCount; i++) {
           for(var j = 0; j < bankCount; j++) {
             if(i != j) {     
-              // random a real (2 digits) between 10 and 20.
-              var num = (parseInt(Math.random() * 1000) + 1000) / 100.0;
+              // random a real (2 digits) between 0 and 10.
+              var num = (parseInt(Math.random() * 1000)) / 100.0;
               // adding value.
               $( "#expo-"+i+"-"+j ).val(num);
             }
@@ -828,6 +916,14 @@
         }
       }
 
+      // get Fail rate of all banks
+      function getFailProb() {
+        failureProb = [];
+        for(var i = 0; i < bankCount; ++i) {
+          // pushing value.
+          failureProb.push(parseFloat($( "#FailProb" + i ).val()));
+        }
+      }
 
       // get thresholds of all banks
       function getThresholds() {
@@ -863,7 +959,7 @@
       initialState();
       
       // allow how many tab for this user.
-      var stateAllow = 2;
+      var stateAllow = 3;
 
       // check the current tab.
       function checkState(index) {
@@ -875,38 +971,17 @@
         }
       }
 
-      // This function is the main function of all calculation.
-      function mainCalculation1(failedNow) {
-        var failedIndicator;
-        var loss;
-        var failed;
-        for(var round = 1; round == 1 || failedMore(failedIndicator, failedNow); round ++) {
-          // At the beginning, setting that failedIndicator is failedNow.
-          failedIndicator = failedNow;
-          // Using Jquery to generate cherts in each round.
-          generateChert(failedIndicator, thresholds, loss, round);
-          // Calculates what banks will fail.
-          loss = failurePropagation(failedIndicator, exposures);
-          // Calculates what companies will fail.
-          failed = PWComparison(thresholds, loss);
-          // merging the new result and old result together.
-          failedNow = PWOr(failed, failedIndicator);
-        }
-      }
-
       // Call when it was in processing page.
       function doProcessing() {
 
-        // Predicting calculations.
-        mainCalculation1(failedInitiate);
+        /*
         // adding a chert to html tag for summarize part.
         addGraph("tabSummarize", "Summarize");
         // adding data to the cherts
         reset("Summarize");
-        // adding a chert to html tag for summarize part.
-        addGraph("tabSummarize", "Overview");
-        // adding data to the cherts
-        reset("Overview");
+        */
+        // call permutation to calculate all possible scenarios.
+        generateAllPossible(bankCount);
         // Updating Color of each box.
         updateBox();
         // change the announcement
@@ -955,6 +1030,32 @@
           }
           catch(e) {
             alert('Error Input Thresholds : '+ e);
+          }
+        });
+      }
+
+      //upload Thresholds via URL.
+      function uploadFailProbURL() {
+        var url = $('#FailProbURL').val();
+        // get data from url
+        $.get( url, function( data ) {
+          try {
+            var obj = $.parseJSON(data);
+            failureProb = obj.failureProb;
+            // check input.
+            if(bankCount != failureProb.length) {
+              throw "The length of input is not match with the number of bank.";
+            }
+
+            for(var i = 0; i < bankCount; ++i) {
+              // random a real (2 digits) between 10 and 20.
+              var num = failureProb[i];
+              // adding value.
+              $( "#FailProb" + i ).val(num);
+            }
+          }
+          catch(e) {
+            alert('Error Input failure rate : '+ e);
           }
         });
       }
@@ -1116,6 +1217,63 @@
       dropZoneThresholds.addEventListener('dragover', handleDragOver, false);
       dropZoneThresholds.addEventListener('drop', handleFileThresholds2, false);
       
+      // reading file Failure rate
+      function handleFileFailProb(evt) {
+        var files = document.getElementById('fileFailProb').files;
+        if (!files.length) {
+          alert('Please select a file!');
+          return;
+        }
+        readFailProb(files[0]);
+      }
+      document.getElementById('fileFailProb').addEventListener('change', handleFileFailProb, false);
+
+      function handleFileFailProb2(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        var files = evt.dataTransfer.files; // FileList object.
+        if (!files.length) {
+          alert('Please select a file!');
+          return;
+        }
+        readFailProb(files[0]);
+      }
+
+      function readFailProb(file) {
+
+        var start = 0;
+        var stop = file.size - 1;
+
+        var reader = new FileReader();
+
+        // If we use onloadend, we need to check the readyState.
+        reader.onloadend = function(evt) {
+          if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+            var lists = evt.target.result.split(",");
+            try {
+              for(var i = 0; i < bankCount; ++i) {
+                failureProb[i] = parseFloat(lists[i]);
+                $( "#FailProb" + i ).val(failureProb[i]);
+              }
+            }
+            catch(e) {
+              alert('Error Input Failure rate : '+ e);
+            }
+          }
+        };
+
+        var blob = file.slice(start, stop + 1);
+        reader.readAsBinaryString(blob);
+
+        // triger modal to hide.
+        $('#FailProbCSV').modal('hide');
+      }
+
+      // Setup the dnd listeners.
+      var dropZoneFailProb = document.getElementById('drop_FailProb');
+      dropZoneFailProb.addEventListener('dragover', handleDragOver, false);
+      dropZoneFailProb.addEventListener('drop', handleFileFailProb2, false);
+
       // setup all tab empty.
       $('#tab2').attr("data-toggle", "");
       $('#tab3').attr("data-toggle", "");
@@ -1123,7 +1281,7 @@
       $('#tab5').attr("data-toggle", "");
       $('#tab6').attr("data-toggle", "");
 
-      function test(){
+      function test(id){
       }
     </script>
   </body>
